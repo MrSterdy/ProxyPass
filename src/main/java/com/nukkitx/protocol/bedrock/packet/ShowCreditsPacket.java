@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class ShowCreditsPacket extends BedrockPacket {
     private long runtimeEntityId;
+
     private Status status;
 
     @Override

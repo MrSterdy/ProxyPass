@@ -9,12 +9,15 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(doNotUseGetters = true, callSuper = false, exclude = {"skinData"})
-@ToString(exclude = {"chainData", "skinData"})
+@EqualsAndHashCode(doNotUseGetters = true, callSuper = false, exclude = {"clientData"})
+@ToString(exclude = {"chainData", "clientData"})
 public class LoginPacket extends BedrockPacket {
     private int protocolVersion;
+
+    private Version version;
+
     private AsciiString chainData;
-    private AsciiString skinData;
+    private AsciiString clientData;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {
@@ -23,5 +26,10 @@ public class LoginPacket extends BedrockPacket {
 
     public BedrockPacketType getPacketType() {
         return BedrockPacketType.LOGIN;
+    }
+
+    public enum Version {
+        VANILLA,
+        EDUCATION
     }
 }

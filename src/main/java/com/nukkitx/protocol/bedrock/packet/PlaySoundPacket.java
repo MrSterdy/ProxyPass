@@ -11,7 +11,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class PlaySoundPacket extends BedrockPacket {
     private String sound;
+
     private Vector3f position;
+
     private float volume;
     private float pitch;
 

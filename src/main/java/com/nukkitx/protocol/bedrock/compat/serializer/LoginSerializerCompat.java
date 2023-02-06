@@ -20,9 +20,10 @@ public class LoginSerializerCompat implements BedrockPacketSerializer<LoginPacke
     @Override
     public void deserialize(ByteBuf buffer, BedrockPacketHelper helper, LoginPacket packet) {
         packet.setProtocolVersion(buffer.readInt());
+        packet.setVersion(LoginPacket.Version.values()[buffer.readByte()]);
 
         ByteBuf jwt = buffer.readSlice(VarInts.readUnsignedInt(buffer)); // Get the JWT.
         packet.setChainData(helper.readLEAsciiString(jwt));
-        packet.setSkinData(helper.readLEAsciiString(jwt));
+        packet.setClientData(helper.readLEAsciiString(jwt));
     }
 }

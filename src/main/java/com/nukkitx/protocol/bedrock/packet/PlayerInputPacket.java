@@ -11,7 +11,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class PlayerInputPacket extends BedrockPacket {
     private Vector2f inputMotion;
+
     private boolean jumping;
+
     private boolean sneaking;
 
     @Override

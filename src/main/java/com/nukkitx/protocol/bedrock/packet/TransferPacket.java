@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class TransferPacket extends BedrockPacket {
     private String address;
+
     private int port;
 
     @Override

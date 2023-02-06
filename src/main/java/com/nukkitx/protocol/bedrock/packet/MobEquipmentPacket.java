@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class MobEquipmentPacket extends BedrockPacket {
     private long runtimeEntityId;
+
     private ItemData item;
     private int inventorySlot;
     private int hotbarSlot;

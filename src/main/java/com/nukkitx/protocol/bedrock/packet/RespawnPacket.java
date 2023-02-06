@@ -11,8 +11,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class RespawnPacket extends BedrockPacket {
     private Vector3f position;
-    private State state;
-    private long runtimeEntityId; // Only used server bound and pretty pointless
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {
@@ -21,11 +19,5 @@ public class RespawnPacket extends BedrockPacket {
 
     public BedrockPacketType getPacketType() {
         return BedrockPacketType.RESPAWN;
-    }
-
-    public enum State {
-        SERVER_SEARCHING,
-        SERVER_READY,
-        CLIENT_READY
     }
 }

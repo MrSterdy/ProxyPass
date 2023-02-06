@@ -15,12 +15,9 @@ import java.util.List;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class ResourcePackStackPacket extends BedrockPacket {
     private boolean forcedToAccept;
+
     private final List<Entry> behaviorPacks = new ObjectArrayList<>();
     private final List<Entry> resourcePacks = new ObjectArrayList<>();
-    private String gameVersion;
-    private final List<ExperimentData> experiments = new ObjectArrayList<>();
-    private boolean experimentsPreviouslyToggled;
-
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {
@@ -35,6 +32,5 @@ public class ResourcePackStackPacket extends BedrockPacket {
     public static class Entry {
         private final String packId;
         private final String packVersion;
-        private final String subPackName;
     }
 }

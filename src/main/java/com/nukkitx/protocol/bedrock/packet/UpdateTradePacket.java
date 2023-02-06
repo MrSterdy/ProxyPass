@@ -13,15 +13,19 @@ import lombok.EqualsAndHashCode;
 public class UpdateTradePacket extends BedrockPacket {
     private int containerId;
     private ContainerType containerType;
+
     private int size; // Hardcoded to 0
-    private int tradeTier;
+
+    private boolean usingEconomyTrade;
+
+    private boolean isWilling;
+
     private long traderUniqueEntityId;
     private long playerUniqueEntityId;
+
     private String displayName;
+
     private NbtMap offers;
-    private boolean newTradingUi;
-    private boolean recipeAddedOnUpdate;
-    private boolean usingEconomyTrade;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

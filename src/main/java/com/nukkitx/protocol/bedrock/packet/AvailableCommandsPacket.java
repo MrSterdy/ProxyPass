@@ -14,8 +14,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class AvailableCommandsPacket extends BedrockPacket {
-    private final List<CommandData> commands = new ObjectArrayList<>();
-    private final List<CommandEnumConstraintData> constraints = new ObjectArrayList<>();
+    private String commands;
+
+    private String unknownString;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

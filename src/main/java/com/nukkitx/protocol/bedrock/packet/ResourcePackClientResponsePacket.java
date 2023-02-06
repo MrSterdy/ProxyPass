@@ -12,8 +12,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class ResourcePackClientResponsePacket extends BedrockPacket {
-    private final List<String> packIds = new ObjectArrayList<>();
     private Status status;
+
+    private final List<String> packIds = new ObjectArrayList<>();
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

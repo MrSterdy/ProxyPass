@@ -15,11 +15,14 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class CraftingEventPacket extends BedrockPacket {
+    private byte containerId;
+
+    private CraftingType type;
+
+    private UUID uuid;
+
     private final List<ItemData> inputs = new ObjectArrayList<>();
     private final List<ItemData> outputs = new ObjectArrayList<>();
-    private byte containerId;
-    private CraftingType type;
-    private UUID uuid;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

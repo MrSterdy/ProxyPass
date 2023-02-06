@@ -1,6 +1,5 @@
 package com.nukkitx.protocol.bedrock.packet;
 
-import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.protocol.bedrock.BedrockPacket;
 import com.nukkitx.protocol.bedrock.BedrockPacketType;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
@@ -11,8 +10,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class InteractPacket extends BedrockPacket {
     private Action action;
+
     private long runtimeEntityId;
-    private Vector3f mousePosition;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

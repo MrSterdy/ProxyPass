@@ -13,35 +13,11 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(AnvilDamagePacket packet) {
-        return false;
-    }
-
-    default boolean handle(AvailableEntityIdentifiersPacket packet) {
-        return false;
-    }
-
     default boolean handle(BlockEntityDataPacket packet) {
         return false;
     }
 
     default boolean handle(BlockPickRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(BookEditPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ClientCacheBlobStatusPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ClientCacheMissResponsePacket packet) {
-        return false;
-    }
-
-    default boolean handle(ClientCacheStatusPacket packet) {
         return false;
     }
 
@@ -53,27 +29,11 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(CommandRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(CompletedUsingItemPacket packet) {
-        return false;
-    }
-
     default boolean handle(ContainerClosePacket packet) {
         return false;
     }
 
     default boolean handle(CraftingEventPacket packet) {
-        return false;
-    }
-
-    default boolean handle(EducationSettingsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(EmotePacket packet) {
         return false;
     }
 
@@ -85,15 +45,7 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(EntityPickRequestPacket packet) {
-        return false;
-    }
-
     default boolean handle(EventPacket packet) {
-        return false;
-    }
-
-    default boolean handle(FilterTextPacket packet) {
         return false;
     }
 
@@ -101,35 +53,7 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(InventoryContentPacket packet) {
-        return false;
-    }
-
-    default boolean handle(InventorySlotPacket packet) {
-        return false;
-    }
-
-    default boolean handle(InventoryTransactionPacket packet) {
-        return false;
-    }
-
     default boolean handle(ItemFrameDropItemPacket packet) {
-        return false;
-    }
-
-    default boolean handle(LabTablePacket packet) {
-        return false;
-    }
-
-    default boolean handle(LecternUpdatePacket packet) {
-        return false;
-    }
-
-    default boolean handle(LevelEventGenericPacket packet) {
-        return false;
-    }
-
-    default boolean handle(LevelSoundEvent1Packet packet) {
         return false;
     }
 
@@ -153,11 +77,7 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(ModalFormResponsePacket packet) {
-        return false;
-    }
-
-    default boolean handle(MoveEntityAbsolutePacket packet) {
+    default boolean handle(MoveEntityPacket packet) {
         return false;
     }
 
@@ -165,35 +85,11 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(MultiplayerSettingsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(NetworkStackLatencyPacket packet) {
-        return false;
-    }
-
-    default boolean handle(PhotoTransferPacket packet) {
-        return false;
-    }
-
     default boolean handle(PlayerActionPacket packet) {
         return false;
     }
 
-    default boolean handle(PlayerAuthInputPacket packet) {
-        return false;
-    }
-
-    default boolean handle(PlayerHotbarPacket packet) {
-        return false;
-    }
-
     default boolean handle(PlayerInputPacket packet) {
-        return false;
-    }
-
-    default boolean handle(PlayerSkinPacket packet) {
         return false;
     }
 
@@ -217,23 +113,7 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(ServerSettingsRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(SetDefaultGameTypePacket packet) {
-        return false;
-    }
-
-    default boolean handle(SetLocalPlayerAsInitializedPacket packet) {
-        return false;
-    }
-
     default boolean handle(SetPlayerGameTypePacket packet) {
-        return false;
-    }
-
-    default boolean handle(SubClientLoginPacket packet) {
         return false;
     }
 
@@ -289,10 +169,6 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(CommandOutputPacket packet) {
-        return false;
-    }
-
     default boolean handle(ContainerOpenPacket packet) {
         return false;
     }
@@ -313,15 +189,7 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(LevelChunkPacket packet) {
-        return false;
-    }
-
     default boolean handle(GameRulesChangedPacket packet) {
-        return false;
-    }
-
-    default boolean handle(GuiDataPickItemPacket packet) {
         return false;
     }
 
@@ -329,39 +197,11 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(AutomationClientConnectPacket packet) {
-        return false;
-    }
-
     default boolean handle(LevelEventPacket packet) {
         return false;
     }
 
-    default boolean handle(MapCreateLockedCopyPacket packet) {
-        return false;
-    }
-
     default boolean handle(MobEffectPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ModalFormRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(MoveEntityDeltaPacket packet) {
-        return false;
-    }
-
-    default boolean handle(NetworkSettingsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(NpcRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(OnScreenTextureAnimationPacket packet) {
         return false;
     }
 
@@ -378,10 +218,6 @@ public interface BedrockPacketHandler extends PacketHandler {
     }
 
     default boolean handle(RemoveEntityPacket packet) {
-        return false;
-    }
-
-    default boolean handle(RemoveObjectivePacket packet) {
         return false;
     }
 
@@ -405,14 +241,6 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(ScriptCustomEventPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ServerSettingsResponsePacket packet) {
-        return false;
-    }
-
     default boolean handle(ServerToClientHandshakePacket packet) {
         return false;
     }
@@ -422,10 +250,6 @@ public interface BedrockPacketHandler extends PacketHandler {
     }
 
     default boolean handle(SetDifficultyPacket packet) {
-        return false;
-    }
-
-    default boolean handle(SetDisplayObjectivePacket packet) {
         return false;
     }
 
@@ -445,18 +269,6 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(SetLastHurtByPacket packet) {
-        return false;
-    }
-
-    default boolean handle(SetScoreboardIdentityPacket packet) {
-        return false;
-    }
-
-    default boolean handle(SetScorePacket packet) {
-        return false;
-    }
-
     default boolean handle(SetSpawnPositionPacket packet) {
         return false;
     }
@@ -465,19 +277,11 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(SettingsCommandPacket packet) {
-        return false;
-    }
-
     default boolean handle(SetTitlePacket packet) {
         return false;
     }
 
     default boolean handle(ShowCreditsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ShowProfilePacket packet) {
         return false;
     }
 
@@ -493,10 +297,6 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(SpawnParticleEffectPacket packet) {
-        return false;
-    }
-
     default boolean handle(StartGamePacket packet) {
         return false;
     }
@@ -509,23 +309,11 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(StructureTemplateDataRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(StructureTemplateDataResponsePacket packet) {
-        return false;
-    }
-
     default boolean handle(TakeItemEntityPacket packet) {
         return false;
     }
 
     default boolean handle(TextPacket packet) {
-        return false;
-    }
-
-    default boolean handle(TickSyncPacket packet) {
         return false;
     }
 
@@ -541,19 +329,7 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(UpdateBlockPropertiesPacket packet) {
-        return false;
-    }
-
-    default boolean handle(UpdateBlockSyncedPacket packet) {
-        return false;
-    }
-
     default boolean handle(UpdateEquipPacket packet) {
-        return false;
-    }
-
-    default boolean handle(UpdateSoftEnumPacket packet) {
         return false;
     }
 
@@ -561,223 +337,43 @@ public interface BedrockPacketHandler extends PacketHandler {
         return false;
     }
 
-    default boolean handle(BiomeDefinitionListPacket packet) {
+    default boolean handle(UseItemPacket packet) {
         return false;
     }
 
-    default boolean handle(LevelSoundEvent2Packet packet) {
+    default boolean handle(DropItemPacket packet) {
         return false;
     }
 
-    default boolean handle(NetworkChunkPublisherUpdatePacket packet) {
+    default boolean handle(InventoryActionPacket packet) {
         return false;
     }
 
-    default boolean handle(VideoStreamConnectPacket packet) {
+    default boolean handle(RemoveBlockPacket packet) {
         return false;
     }
 
-    default boolean handle(CodeBuilderPacket packet) {
+    default boolean handle(FullChunkDataPacket packet) {
         return false;
     }
 
-    default boolean handle(EmoteListPacket packet) {
+    default boolean handle(ContainerSetSlotPacket packet) {
         return false;
     }
 
-    default boolean handle(ItemStackRequestPacket packet) {
+    default boolean handle(ContainerSetContentPacket packet) {
         return false;
     }
 
-    default boolean handle(ItemStackResponsePacket packet) {
+    default boolean handle(ReplaceItemInSlotPacket packet) {
         return false;
     }
 
-    default boolean handle(PlayerArmorDamagePacket packet) {
+    default boolean handle(AddItemPacket packet) {
         return false;
     }
 
-    default boolean handle(PlayerEnchantOptionsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(CreativeContentPacket packet) {
-        return false;
-    }
-
-    default boolean handle(UpdatePlayerGameTypePacket packet) {
-        return false;
-    }
-
-    default boolean handle(PositionTrackingDBServerBroadcastPacket packet) {
-        return false;
-    }
-
-    default boolean handle(PositionTrackingDBClientRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(PacketViolationWarningPacket packet) {
-        return false;
-    }
-
-    default boolean handle(DebugInfoPacket packet) {
-        return false;
-    }
-
-    default boolean handle(MotionPredictionHintsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(AnimateEntityPacket packet) {
-        return false;
-    }
-
-    default boolean handle(CameraShakePacket packet) {
-        return false;
-    }
-
-    default boolean handle(CorrectPlayerMovePredictionPacket packet) {
-        return false;
-    }
-
-    default boolean handle(PlayerFogPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ItemComponentPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ClientboundDebugRendererPacket packet) {
-        return false;
-    }
-
-    default boolean handle(SyncEntityPropertyPacket packet) {
-        return false;
-    }
-
-    default boolean handle(AddVolumeEntityPacket packet) {
-        return false;
-    }
-
-    default boolean handle(RemoveVolumeEntityPacket packet) {
-        return false;
-    }
-
-    default boolean handle(NpcDialoguePacket packet) {
-        return false;
-    }
-
-    default boolean handle(SimulationTypePacket packet) {
-        return false;
-    }
-
-    default boolean handle(EduUriResourcePacket packet) {
-        return false;
-    }
-
-    default boolean handle(CreatePhotoPacket packet) {
-        return false;
-    }
-
-    default boolean handle(UpdateSubChunkBlocksPacket packet) {
-        return false;
-    }
-
-    default boolean handle(SubChunkPacket packet) {
-        return false;
-    }
-
-    default boolean handle(SubChunkRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(PhotoInfoRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(PlayerStartItemCooldownPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ScriptMessagePacket packet) {
-        return false;
-    }
-
-    default boolean handle(CodeBuilderSourcePacket packet) {
-        return false;
-    }
-
-    default boolean handle(TickingAreasLoadStatusPacket packet) {
-        return false;
-    }
-
-    default boolean handle(DimensionDataPacket packet) {
-        return false;
-    }
-
-    default boolean handle(AgentActionEventPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ChangeMobPropertyPacket packet) {
-        return false;
-    }
-
-    default boolean handle(LessonProgressPacket packet) {
-        return false;
-    }
-
-    default boolean handle(RequestAbilityPacket packet) {
-        return false;
-    }
-
-    default boolean handle(RequestPermissionsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ToastRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(UpdateAbilitiesPacket packet) {
-        return false;
-    }
-
-    default boolean handle(UpdateAdventureSettingsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(DeathInfoPacket packet) {
-        return false;
-    }
-
-    default boolean handle(EditorNetworkPacket packet) {
-        return false;
-    }
-
-    default boolean handle(FeatureRegistryPacket packet) {
-        return false;
-    }
-
-    default boolean handle(ServerStatsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(RequestNetworkSettingsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(GameTestRequestPacket packet) {
-        return false;
-    }
-
-    default boolean handle(GameTestResultsPacket packet) {
-        return false;
-    }
-
-    default boolean handle(UpdateClientInputLocksPacket packet) {
+    default boolean handle(CommandStepPacket packet) {
         return false;
     }
 }

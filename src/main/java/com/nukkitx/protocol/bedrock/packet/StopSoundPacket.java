@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class StopSoundPacket extends BedrockPacket {
     private String soundName;
+
     private boolean stoppingAllSound;
 
     @Override

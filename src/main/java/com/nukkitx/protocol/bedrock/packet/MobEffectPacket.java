@@ -10,10 +10,14 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class MobEffectPacket extends BedrockPacket {
     private long runtimeEntityId;
+
     private Event event;
+
     private int effectId;
     private int amplifier;
+
     private boolean particles;
+
     private int duration;
 
     @Override

@@ -12,7 +12,7 @@ import java.util.UUID;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class ResourcePackChunkRequestPacket extends BedrockPacket {
     private UUID packId;
-    private String packVersion;
+
     private int chunkIndex;
 
     @Override

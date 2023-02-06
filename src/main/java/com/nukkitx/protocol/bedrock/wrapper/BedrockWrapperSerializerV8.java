@@ -30,8 +30,6 @@ public class BedrockWrapperSerializerV8 extends BedrockWrapperSerializer {
                 try {
                     int id = codec.getId(packet);
                     packetBuffer.writeByte(id);
-                    packetBuffer.writeByte(packet.getSenderId());
-                    packetBuffer.writeByte(packet.getClientId());
                     codec.tryEncode(packetBuffer, packet, session);
 
                     VarInts.writeUnsignedInt(uncompressed, packetBuffer.readableBytes());
@@ -68,8 +66,6 @@ public class BedrockWrapperSerializerV8 extends BedrockWrapperSerializer {
                     int packetId = packetBuffer.readUnsignedByte();
                     BedrockPacket packet = codec.tryDecode(packetBuffer, packetId, session);
                     packet.setPacketId(packetId);
-                    packet.setSenderId(packetBuffer.readUnsignedByte());
-                    packet.setClientId(packetBuffer.readUnsignedByte());
                     packets.add(packet);
                 } catch (PacketSerializeException e) {
                     log.debug("Error occurred whilst decoding packet", e);

@@ -21,7 +21,6 @@ public class PlayStatusPacket extends BedrockPacket {
     }
 
     public enum Status {
-
         /**
          * Sent to confirm login success and move onto resource pack sequence
          */
@@ -45,22 +44,13 @@ public class PlayStatusPacket extends BedrockPacket {
         LOGIN_FAILED_INVALID_TENANT,
 
         /**
-         * Sent when a Education Edition client joins an Bedrock server
+         * Sent when an Education Edition client joins a Bedrock server
          */
         LOGIN_FAILED_EDITION_MISMATCH_EDU_TO_VANILLA,
 
         /**
          * Sent when a Bedrock client joins an Education server
          */
-        LOGIN_FAILED_EDITION_MISMATCH_VANILLA_TO_EDU,
-
-        /**
-         * Sent to a split screen player when the server is full
-         */
-        FAILED_SERVER_FULL_SUB_CLIENT,
-
-        EDITOR_TO_VANILLA_MISMATCH,
-
-        VANILLA_TO_EDITOR_MISMATCH
+        LOGIN_FAILED_EDITION_MISMATCH_VANILLA_TO_EDU
     }
 }

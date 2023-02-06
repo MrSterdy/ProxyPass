@@ -10,11 +10,15 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class BossEventPacket extends BedrockPacket {
     private long bossUniqueEntityId;
+
     private Action action;
+
     private long playerUniqueEntityId;
+
     private String title;
     private float healthPercentage;
     private int darkenSky;
+
     private int color;
     private int overlay;
 
@@ -59,7 +63,6 @@ public class BossEventPacket extends BedrockPacket {
         /**
          * Not implemented :( Intended to alter bar appearance, but these currently produce no effect on clientside whatsoever.
          */
-        UPDATE_STYLE,
-        QUERY
+        UPDATE_STYLE
     }
 }

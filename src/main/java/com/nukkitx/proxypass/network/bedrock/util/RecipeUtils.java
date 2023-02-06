@@ -36,12 +36,12 @@ public class RecipeUtils {
                 entry.uuid = craftingData.getUuid();
             }
 
-            if (type == CraftingDataType.SHAPED || type == CraftingDataType.SHAPELESS || type == CraftingDataType.SHAPELESS_CHEMISTRY || type == CraftingDataType.SHULKER_BOX || type == CraftingDataType.SHAPED_CHEMISTRY) {
+            if (type == CraftingDataType.SHAPED || type == CraftingDataType.SHAPELESS || type == CraftingDataType.SHULKER_BOX) {
                 entry.id = craftingData.getRecipeId();
                 entry.priority = craftingData.getPriority();
                 entry.output = writeItemArray(craftingData.getOutputs().toArray(new ItemData[0]));
             }
-            if (type == CraftingDataType.SHAPED || type == CraftingDataType.SHAPED_CHEMISTRY) {
+            if (type == CraftingDataType.SHAPED) {
 
                 int charCounter = 0;
                 // ItemData[] inputs = craftingData.getInputs().toArray(new ItemData[0]);
@@ -82,7 +82,7 @@ public class RecipeUtils {
                 }
                 entry.input = itemMap;
             }
-            if (type == CraftingDataType.SHAPELESS || type == CraftingDataType.SHAPELESS_CHEMISTRY || type == CraftingDataType.SHULKER_BOX) {
+            if (type == CraftingDataType.SHAPELESS || type == CraftingDataType.SHULKER_BOX) {
                 entry.input = writeDescriptorArray(craftingData.getInputDescriptors());
             }
 
@@ -94,24 +94,6 @@ public class RecipeUtils {
                 entry.output = itemFromNetwork(craftingData.getOutputs().get(0));
             }
             entries.add(entry);
-        }
-        for (PotionMixData potion : packet.getPotionMixData()) {
-            potions.add(new PotionMixDataEntry(
-                    ProxyPass.legacyIdMap.get(potion.getInputId()),
-                    potion.getInputMeta(),
-                    ProxyPass.legacyIdMap.get(potion.getReagentId()),
-                    potion.getReagentMeta(),
-                    ProxyPass.legacyIdMap.get(potion.getOutputId()),
-                    potion.getOutputMeta()
-            ));
-        }
-
-        for (ContainerMixData container : packet.getContainerMixData()) {
-            containers.add(new ContainerMixDataEntry(
-                    ProxyPass.legacyIdMap.get(container.getInputId()),
-                    ProxyPass.legacyIdMap.get(container.getReagentId()),
-                    ProxyPass.legacyIdMap.get(container.getOutputId())
-            ));
         }
 
         Recipes recipes = new Recipes(ProxyPass.CODEC.getProtocolVersion(), entries, potions, containers);

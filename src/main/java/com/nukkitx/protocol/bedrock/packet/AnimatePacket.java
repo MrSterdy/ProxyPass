@@ -9,9 +9,11 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class AnimatePacket extends BedrockPacket {
-    private float rowingTime;
     private Action action;
+
     private long runtimeEntityId;
+
+    private float rowingTime;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

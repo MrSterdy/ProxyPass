@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class SetEntityMotionPacket extends BedrockPacket {
     private long runtimeEntityId;
+
     private Vector3f motion;
 
     @Override

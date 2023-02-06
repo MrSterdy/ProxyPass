@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class MobArmorEquipmentPacket extends BedrockPacket {
     private long runtimeEntityId;
+
     private ItemData helmet;
     private ItemData chestplate;
     private ItemData leggings;

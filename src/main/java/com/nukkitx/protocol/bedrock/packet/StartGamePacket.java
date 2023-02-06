@@ -3,8 +3,6 @@ package com.nukkitx.protocol.bedrock.packet;
 import com.nukkitx.math.vector.Vector2f;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.math.vector.Vector3i;
-import com.nukkitx.nbt.NbtList;
-import com.nukkitx.nbt.NbtMap;
 import com.nukkitx.protocol.bedrock.BedrockPacket;
 import com.nukkitx.protocol.bedrock.BedrockPacketType;
 import com.nukkitx.protocol.bedrock.data.*;
@@ -15,132 +13,59 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
-@ToString(exclude = {"itemEntries", "blockPalette"})
 public class StartGamePacket extends BedrockPacket {
     private static final InternalLogger log = InternalLoggerFactory.getInstance(StartGamePacket.class);
 
-    private final List<GameRuleData<?>> gamerules = new ObjectArrayList<>();
+    /**
+     * Player's entity id that uniquely identifies the entity of the server.
+     */
     private long uniqueEntityId;
     private long runtimeEntityId;
-    private GameType playerGameType;
-    private Vector3f playerPosition;
-    private Vector2f rotation;
-    // Level settings start
-    private long seed;
-    private SpawnBiomeType spawnBiomeType = SpawnBiomeType.DEFAULT;
-    private String customBiomeName = "";
-    private int dimensionId;
-    private int generatorId;
-    private GameType levelGameType;
-    private int difficulty;
-    private Vector3i defaultSpawn;
-    private boolean achievementsDisabled;
-    private int dayCycleStopTime;
-    private int eduEditionOffers;
-    private boolean eduFeaturesEnabled;
-    private String educationProductionId = "";
-    private float rainLevel;
-    private float lightningLevel;
-    private boolean platformLockedContentConfirmed;
-    private boolean multiplayerGame;
-    private boolean broadcastingToLan;
-    private GamePublishSetting xblBroadcastMode;
-    private GamePublishSetting platformBroadcastMode;
-    private boolean commandsEnabled;
-    private boolean texturePacksRequired;
-    private final List<ExperimentData> experiments = new ObjectArrayList<>();
-    private boolean experimentsPreviouslyToggled;
-    private boolean bonusChestEnabled;
-    private boolean startingWithMap;
-    private boolean trustingPlayers;
-    private PlayerPermission defaultPlayerPermission;
-    private int serverChunkTickRange;
-    private boolean behaviorPackLocked;
-    private boolean resourcePackLocked;
-    private boolean fromLockedWorldTemplate;
-    private boolean usingMsaGamertagsOnly;
-    private boolean fromWorldTemplate;
-    private boolean worldTemplateOptionLocked;
-    private boolean onlySpawningV1Villagers;
-    private String vanillaVersion;
-    private int limitedWorldWidth;
-    private int limitedWorldHeight;
-    private boolean netherType;
-    /**
-     * @since v465
-     */
-    private EduSharedUriResource eduSharedUriResource = EduSharedUriResource.EMPTY;
-    private boolean forceExperimentalGameplay;
-    /**
-     * @since v544
-     */
-    private ChatRestrictionLevel chatRestrictionLevel;
-    /**
-     * @since v544
-     */
-    private boolean disablingPlayerInteractions;
-    /**
-     * @since v544
-     */
-    private boolean disablingPersonas;
-    /**
-     * @since v544
-     */
-    private boolean disablingCustomSkins;
-    // Level settings end
-    private String levelId;
-    private String levelName;
-    private String premiumWorldTemplateId;
-    private boolean trial;
-    /**
-     * @deprecated as of v428
-     */
-    private AuthoritativeMovementMode authoritativeMovementMode;
-    /**
-     * @since v428
-     */
-    private SyncedPlayerMovementSettings playerMovementSettings;
-    private long currentTick;
-    private int enchantmentSeed;
-    private NbtList<NbtMap> blockPalette;
-    private final List<BlockPropertyData> blockProperties = new ObjectArrayList<>();
-    private List<ItemEntry> itemEntries = new ObjectArrayList<>();
-    private String multiplayerCorrelationId;
-    /**
-     * @since v407
-     */
-    private boolean inventoriesServerAuthoritative;
-    /**
-     * The name of the server software.
-     * Used for telemetry within the Bedrock client.
-     *
-     * @since v440
-     */
-    private String serverEngine;
-    /**
-     * @since v475
-     */
-    private long blockRegistryChecksum;
 
     /**
-     * @since v526
+     * Player's gamemode that may differ from the world's gamemode
      */
-    private Object playerPropertyData;
-    private UUID worldTemplateId;
-    /**
-     * @since v534
-     */
-    private boolean worldEditor;
-    /**
-     * Enables client side chunk generation for chunks outside the ticking radius.
-     *
-     * @since v542
-     */
-    private boolean clientSideGenerationEnabled;
+    private GameType playerGameType;
+
+    private Vector3f playerPosition;
+    private Vector2f playerRotation;
+
+    private Dimension dimension;
+    private Generator generator;
+
+    private long seed;
+
+    private GameType worldGameType;
+
+    private Difficulty difficulty;
+
+    private Vector3i spawnPosition;
+
+    private boolean achievementsDisabled;
+
+    private int dayCycleStopTime;
+
+    private boolean eduMode;
+
+    private float rainLevel;
+    private float lightningLevel;
+
+    private boolean commandsEnabled;
+
+    private boolean texturePacksRequired;
+
+    private final List<GameRuleData<?>> gamerules = new ObjectArrayList<>();
+
+    private String levelId;
+    private String worldName;
+    private String premiumWorldTemplate;
+
+    private boolean trial;
+
+    private long currentTick;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {
@@ -151,26 +76,22 @@ public class StartGamePacket extends BedrockPacket {
         return BedrockPacketType.START_GAME;
     }
 
-    @Deprecated
-    public void setSeed(int seed) {
-        this.seed = seed;
+    public enum Generator {
+        OLD,
+        INFINITE,
+        FLAT
     }
 
-    public void setSeed(long seed) {
-        this.seed = seed;
+    public enum Dimension {
+        OVERWORLD,
+        NETHER,
+        END
     }
 
-    @Value
-    @AllArgsConstructor
-    public static class ItemEntry {
-        private final String identifier;
-        private final short id;
-        private final boolean componentBased;
-
-        public ItemEntry(String identifier, short id) {
-            this.identifier = identifier;
-            this.id = id;
-            this.componentBased = false;
-        }
+    public enum Difficulty {
+        PEACEFUL,
+        EASY,
+        NORMAL,
+        HARD
     }
 }

@@ -21,7 +21,9 @@ public class ContainerSetDataPacket extends BedrockPacket {
     public static final int BREWING_STAND_FUEL_TOTAL = 2;
 
     private byte windowId;
+
     private int property;
+
     private int value;
 
     @Override

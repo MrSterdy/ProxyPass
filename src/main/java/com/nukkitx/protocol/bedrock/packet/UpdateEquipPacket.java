@@ -12,8 +12,11 @@ import lombok.EqualsAndHashCode;
 public class UpdateEquipPacket extends BedrockPacket {
     private short windowId;
     private short windowType;
+
     private int size; // Couldn't find anything on this one. Looks like it isn't used?
+
     private long uniqueEntityId;
+
     private NbtMap tag;
 
     @Override

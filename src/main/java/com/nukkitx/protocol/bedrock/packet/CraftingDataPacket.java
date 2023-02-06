@@ -19,12 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class CraftingDataPacket extends BedrockPacket {
     private final List<CraftingData> craftingData = new ObjectArrayList<>();
-    private final List<PotionMixData> potionMixData = new ObjectArrayList<>();
-    private final List<ContainerMixData> containerMixData = new ObjectArrayList<>();
-    /**
-     * @since v465
-     */
-    private final List<MaterialReducer> materialReducers = new ObjectArrayList<>();
+
     private boolean cleanRecipes;
 
     @Override

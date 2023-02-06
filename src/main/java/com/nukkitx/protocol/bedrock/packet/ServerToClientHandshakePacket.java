@@ -12,6 +12,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 @NoEncryption // This is sent in plain text to complete the Diffie Hellman key exchange.
 public class ServerToClientHandshakePacket extends BedrockPacket {
+    private String publicKey;
+
     private String jwt;
 
     @Override

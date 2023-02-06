@@ -12,13 +12,15 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class AddItemEntityPacket extends BedrockPacket {
-    private final EntityDataMap metadata = new EntityDataMap();
     private long uniqueEntityId;
     private long runtimeEntityId;
+
     private ItemData itemInHand;
+
     private Vector3f position;
     private Vector3f motion;
-    private boolean fromFishing;
+
+    private final EntityDataMap metadata = new EntityDataMap();
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

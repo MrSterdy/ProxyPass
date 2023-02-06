@@ -10,12 +10,12 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class SetTitlePacket extends BedrockPacket {
     private Type type;
+
     private String text;
+
     private int fadeInTime;
     private int stayTime;
     private int fadeOutTime;
-    private String xuid;
-    private String platformOnlineId;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

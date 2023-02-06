@@ -22,25 +22,4 @@ public class EventPacket extends BedrockPacket {
     public BedrockPacketType getPacketType() {
         return BedrockPacketType.EVENT;
     }
-
-    public enum Event {
-        ACHIEVEMENT_AWARDED,
-        ENTITY_INTERACT,
-        PORTAL_BUILT,
-        PORTAL_USED,
-        MOB_KILLED,
-        CAULDRON_USED,
-        PLAYER_DEATH,
-        BOSS_KILLED,
-        AGENT_COMMAND,
-        AGENT_CREATED,
-        PATTERN_REMOVED,
-        SLASH_COMMAND_EXECUTED,
-        FISH_BUCKETED,
-        MOB_BORN,
-        PET_DIED,
-        CAULDRON_BLOCK_USED,
-        COMPOSTER_BLOCK_USED,
-        BELL_BLOCK_USED
-    }
 }

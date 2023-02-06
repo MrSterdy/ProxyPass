@@ -13,12 +13,11 @@ import java.util.List;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class TextPacket extends BedrockPacket {
     private Type type;
-    private boolean needsTranslation;
-    private String sourceName;
+
+    private String sender;
     private String message;
+
     private List<String> parameters = new ObjectArrayList<>();
-    private String xuid;
-    private String platformChatId = "";
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {
@@ -34,16 +33,9 @@ public class TextPacket extends BedrockPacket {
         CHAT,
         TRANSLATION,
         POPUP,
-        JUKEBOX_POPUP,
         TIP,
         SYSTEM,
         WHISPER,
-        ANNOUNCEMENT,
-        OBJECT,
-        OBJECT_WHISPER,
-        /**
-         * @since v553
-         */
-        OBJECT_ANNOUNCEMENT
+        ANNOUNCEMENT
     }
 }

@@ -14,8 +14,8 @@ import java.util.List;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class UpdateAttributesPacket extends BedrockPacket {
     private long runtimeEntityId;
+
     private List<AttributeData> attributes = new ObjectArrayList<>();
-    private long tick;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

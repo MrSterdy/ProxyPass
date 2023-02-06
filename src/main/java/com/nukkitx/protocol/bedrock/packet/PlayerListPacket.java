@@ -15,8 +15,9 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class PlayerListPacket extends BedrockPacket {
-    private final List<Entry> entries = new ObjectArrayList<>();
     private Action action;
+
+    private final List<Entry> entries = new ObjectArrayList<>();
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {
@@ -39,12 +40,6 @@ public class PlayerListPacket extends BedrockPacket {
         private final UUID uuid;
         private long entityId;
         private String name;
-        private String xuid;
-        private String platformChatId;
-        private int buildPlatform;
         private SerializedSkin skin;
-        private boolean teacher;
-        private boolean host;
-        private boolean trustedSkin;
     }
 }

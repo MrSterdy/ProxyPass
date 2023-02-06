@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class BlockEntityDataPacket extends BedrockPacket {
     private Vector3i blockPosition;
+
     private NbtMap data;
 
     @Override

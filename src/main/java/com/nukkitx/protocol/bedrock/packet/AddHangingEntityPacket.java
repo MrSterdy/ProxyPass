@@ -12,7 +12,9 @@ import lombok.EqualsAndHashCode;
 public class AddHangingEntityPacket extends BedrockPacket {
     private long uniqueEntityId;
     private long runtimeEntityId;
+
     private Vector3f position;
+
     private int direction;
 
     @Override

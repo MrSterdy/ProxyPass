@@ -5,7 +5,6 @@ import com.nukkitx.protocol.bedrock.BedrockClientSession;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.ClientToServerHandshakePacket;
 import com.nukkitx.protocol.bedrock.packet.LoginPacket;
-import com.nukkitx.protocol.bedrock.packet.NetworkSettingsPacket;
 import com.nukkitx.protocol.bedrock.packet.ServerToClientHandshakePacket;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
 import com.nukkitx.proxypass.ProxyPass;
@@ -27,16 +26,6 @@ public class DownstreamInitialPacketHandler implements BedrockPacketHandler {
     private final BedrockClientSession session;
     private final ProxyPlayerSession player;
     private final ProxyPass proxy;
-    private final LoginPacket loginPacket;
-
-    @Override
-    public boolean handle(NetworkSettingsPacket packet) {
-        this.session.setCompression(packet.getCompressionAlgorithm());
-        log.info("Compression algorithm picked {}", packet.getCompressionAlgorithm());
-
-        this.session.sendPacketImmediately(this.loginPacket);
-        return true;
-    }
 
     public boolean handle(ServerToClientHandshakePacket packet) {
         try {
@@ -53,8 +42,7 @@ public class DownstreamInitialPacketHandler implements BedrockPacketHandler {
         ClientToServerHandshakePacket clientToServerHandshake = new ClientToServerHandshakePacket();
         session.sendPacketImmediately(clientToServerHandshake);
 
-
-        this.session.setPacketHandler(new DownstreamPacketHandler(this.session, this.player, this.proxy));
+        this.session.setPacketHandler(new DownstreamPacketHandler(this.session, this.proxy));
         log.debug("Downstream connected");
         return true;
     }

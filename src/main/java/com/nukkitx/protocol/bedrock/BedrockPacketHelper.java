@@ -23,7 +23,6 @@ import com.nukkitx.protocol.bedrock.data.skin.AnimationData;
 import com.nukkitx.protocol.bedrock.data.skin.ImageData;
 import com.nukkitx.protocol.bedrock.data.skin.SerializedSkin;
 import com.nukkitx.protocol.bedrock.data.structure.StructureSettings;
-import com.nukkitx.protocol.bedrock.packet.InventoryTransactionPacket;
 import com.nukkitx.protocol.bedrock.util.TriConsumer;
 import com.nukkitx.protocol.util.Int2ObjectBiMap;
 import com.nukkitx.protocol.util.QuadConsumer;
@@ -572,26 +571,6 @@ public abstract class BedrockPacketHelper {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void readItemUse(ByteBuf buffer, InventoryTransactionPacket packet, BedrockSession session) {
-        packet.setActionType(VarInts.readUnsignedInt(buffer));
-        packet.setBlockPosition(this.readBlockPosition(buffer));
-        packet.setBlockFace(VarInts.readInt(buffer));
-        packet.setHotbarSlot(VarInts.readInt(buffer));
-        packet.setItemInHand(this.readItem(buffer, session));
-        packet.setPlayerPosition(this.readVector3f(buffer));
-        packet.setClickPosition(this.readVector3f(buffer));
-    }
-
-    public void writeItemUse(ByteBuf buffer, InventoryTransactionPacket packet, BedrockSession session) {
-        VarInts.writeUnsignedInt(buffer, packet.getActionType());
-        this.writeBlockPosition(buffer, packet.getBlockPosition());
-        VarInts.writeInt(buffer, packet.getBlockFace());
-        VarInts.writeInt(buffer, packet.getHotbarSlot());
-        this.writeItem(buffer, packet.getItemInHand(), session);
-        this.writeVector3f(buffer, packet.getPlayerPosition());
-        this.writeVector3f(buffer, packet.getClickPosition());
     }
 
     public boolean readInventoryActions(ByteBuf buffer, BedrockSession session, List<InventoryActionData> actions) {

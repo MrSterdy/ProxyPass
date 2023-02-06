@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class BlockPickRequestPacket extends BedrockPacket {
     private Vector3i blockPosition;
-    private boolean addUserData;
+
     private int hotbarSlot;
 
     @Override

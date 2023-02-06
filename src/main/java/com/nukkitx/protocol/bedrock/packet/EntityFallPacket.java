@@ -10,7 +10,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class EntityFallPacket extends BedrockPacket {
     private long runtimeEntityId;
+
     private float fallDistance;
+
     private boolean inVoid;
 
     @Override

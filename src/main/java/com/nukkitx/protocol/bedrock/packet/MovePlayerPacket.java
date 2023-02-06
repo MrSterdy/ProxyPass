@@ -13,14 +13,18 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class MovePlayerPacket extends BedrockPacket {
     private long runtimeEntityId;
+
     private Vector3f position;
     private Vector3f rotation;
-    private Mode mode;
+
+    private Animation animation;
+
     private boolean onGround;
+
     private long ridingRuntimeEntityId;
+
     private TeleportationCause teleportationCause;
     private int entityType;
-    private long tick;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {
@@ -31,7 +35,7 @@ public class MovePlayerPacket extends BedrockPacket {
         return BedrockPacketType.MOVE_PLAYER;
     }
 
-    public enum Mode {
+    public enum Animation {
         NORMAL,
         RESPAWN,
         TELEPORT,

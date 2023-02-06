@@ -12,12 +12,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class PlayerActionPacket extends BedrockPacket {
     private long runtimeEntityId;
+
     private PlayerActionType action;
+
     private Vector3i blockPosition;
-    /**
-     * @since v526
-     */
-    private Vector3i resultPosition;
+
     private int face;
 
     @Override

@@ -12,7 +12,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class LevelEventPacket extends BedrockPacket {
     private LevelEventType type;
+
     private Vector3f position;
+
     private int data;
 
     @Override

@@ -14,9 +14,11 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class ExplodePacket extends BedrockPacket {
-    private final List<Vector3i> records = new ObjectArrayList<>();
     private Vector3f position;
+
     private float radius;
+
+    private final List<Vector3i> records = new ObjectArrayList<>();
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

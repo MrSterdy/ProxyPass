@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class ShowStoreOfferPacket extends BedrockPacket {
     private String offerId;
-    private boolean shownToAll;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

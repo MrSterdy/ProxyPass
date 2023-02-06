@@ -12,8 +12,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class ContainerOpenPacket extends BedrockPacket {
     private byte id;
+
     private ContainerType type;
+
     private Vector3i blockPosition;
+
     private long uniqueEntityId = -1;
 
     @Override

@@ -12,12 +12,8 @@ import com.nimbusds.jose.shaded.json.JSONObject;
 import com.nimbusds.jwt.SignedJWT;
 import com.nukkitx.protocol.bedrock.BedrockClient;
 import com.nukkitx.protocol.bedrock.BedrockServerSession;
-import com.nukkitx.protocol.bedrock.data.PacketCompressionAlgorithm;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.LoginPacket;
-import com.nukkitx.protocol.bedrock.packet.NetworkSettingsPacket;
-import com.nukkitx.protocol.bedrock.packet.PlayStatusPacket;
-import com.nukkitx.protocol.bedrock.packet.RequestNetworkSettingsPacket;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
 import com.nukkitx.proxypass.ProxyPass;
 import com.nukkitx.proxypass.network.bedrock.util.ForgeryUtils;
@@ -35,11 +31,10 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
 
     private final BedrockServerSession session;
     private final ProxyPass proxy;
-    private JSONObject skinData;
+    private JSONObject clientData;
     private JSONObject extraData;
     private ArrayNode chainData;
     private AuthData authData;
-    private ProxyPlayerSession player;
 
     private static boolean validateChainData(JsonNode data) throws Exception {
         ECPublicKey lastKey = null;
@@ -65,28 +60,6 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
 
     private static boolean verifyJwt(JWSObject jwt, ECPublicKey key) throws JOSEException {
         return jwt.verify(new DefaultJWSVerifierFactory().createJWSVerifier(jwt.getHeader(), key));
-    }
-
-    @Override
-    public boolean handle(RequestNetworkSettingsPacket packet) {
-        int protocolVersion = packet.getProtocolVersion();
-
-        if (protocolVersion != ProxyPass.PROTOCOL_VERSION) {
-            PlayStatusPacket status = new PlayStatusPacket();
-            if (protocolVersion > ProxyPass.PROTOCOL_VERSION) {
-                status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_SERVER_OLD);
-            } else {
-                status.setStatus(PlayStatusPacket.Status.LOGIN_FAILED_CLIENT_OLD);
-            }
-        }
-        session.setPacketCodec(ProxyPass.CODEC);
-        session.setCompression(PacketCompressionAlgorithm.ZLIB);
-
-        NetworkSettingsPacket networkSettingsPacket = new NetworkSettingsPacket();
-        networkSettingsPacket.setCompressionThreshold(0);
-        networkSettingsPacket.setCompressionAlgorithm(PacketCompressionAlgorithm.ZLIB);
-        session.sendPacketImmediately(networkSettingsPacket);
-        return true;
     }
 
     @Override
@@ -119,17 +92,17 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
             extraData = (JSONObject) jwt.getPayload().toJSONObject().get("extraData");
 
             this.authData = new AuthData(extraData.getAsString("displayName"),
-                    UUID.fromString(extraData.getAsString("identity")), extraData.getAsString("XUID"));
+                    UUID.fromString(extraData.getAsString("identity")));
 
             if (payload.get("identityPublicKey").getNodeType() != JsonNodeType.STRING) {
                 throw new RuntimeException("Identity Public Key was not found!");
             }
             ECPublicKey identityPublicKey = EncryptionUtils.generateKey(payload.get("identityPublicKey").textValue());
 
-            JWSObject clientJwt = JWSObject.parse(packet.getSkinData().toString());
+            JWSObject clientJwt = JWSObject.parse(packet.getClientData().toString());
             verifyJwt(clientJwt, identityPublicKey);
 
-            skinData = new JSONObject(clientJwt.getPayload().toJSONObject());
+            clientData = new JSONObject(clientJwt.getPayload().toJSONObject());
             initializeProxySession();
         } catch (Exception e) {
             session.disconnect("disconnectionScreen.internalError.cantConnect");
@@ -149,18 +122,9 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
             }
             downstream.setPacketCodec(ProxyPass.CODEC);
             ProxyPlayerSession proxySession = new ProxyPlayerSession(this.session, downstream, this.proxy, this.authData);
-            this.player = proxySession;
             downstream.getHardcodedBlockingId().set(355);
-            try {
-                JWSObject jwt = JWSObject.parse(chainData.get(chainData.size() - 1).asText());
-                JsonNode payload = ProxyPass.JSON_MAPPER.readTree(jwt.getPayload().toBytes());
-                player.getLogger().saveJson("chainData", payload);
-                player.getLogger().saveJson("skinData", this.skinData);
-            } catch (Exception e) {
-                log.error("JSON output error: " + e.getMessage(), e);
-            }
             SignedJWT authData = ForgeryUtils.forgeAuthData(proxySession.getProxyKeyPair(), extraData);
-            JWSObject skinData = ForgeryUtils.forgeSkinData(proxySession.getProxyKeyPair(), this.skinData);
+            JWSObject clientData = ForgeryUtils.forgeSkinData(proxySession.getProxyKeyPair(), this.clientData);
             chainData.remove(chainData.size() - 1);
             chainData.add(authData.serialize());
             JsonNode json = ProxyPass.JSON_MAPPER.createObjectNode().set("chain", chainData);
@@ -173,20 +137,19 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
 
             LoginPacket login = new LoginPacket();
             login.setChainData(chainData);
-            login.setSkinData(AsciiString.of(skinData.serialize()));
+            login.setClientData(AsciiString.of(clientData.serialize()));
             login.setProtocolVersion(ProxyPass.PROTOCOL_VERSION);
+            login.setVersion(LoginPacket.Version.VANILLA);
+
+            session.sendPacketImmediately(login);
 
             this.session.setBatchHandler(proxySession.getUpstreamBatchHandler());
             downstream.setBatchHandler(proxySession.getDownstreamTailHandler());
             downstream.setLogging(true);
-            downstream.setPacketHandler(new DownstreamInitialPacketHandler(downstream, proxySession, this.proxy, login));
+            downstream.setPacketHandler(new DownstreamInitialPacketHandler(downstream, proxySession, this.proxy));
             downstream.addDisconnectHandler(disconnectReason -> this.session.disconnect());
             downstream.getHardcodedBlockingId().set(ProxyPass.SHIELD_RUNTIME_ID);
             this.session.getHardcodedBlockingId().set(ProxyPass.SHIELD_RUNTIME_ID);
-
-            RequestNetworkSettingsPacket packet = new RequestNetworkSettingsPacket();
-            packet.setProtocolVersion(ProxyPass.PROTOCOL_VERSION);
-            downstream.sendPacketImmediately(packet);
 
             //SkinUtils.saveSkin(proxySession, this.skinData);
         });
