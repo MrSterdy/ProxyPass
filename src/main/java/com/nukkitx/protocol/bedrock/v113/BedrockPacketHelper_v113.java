@@ -19,7 +19,6 @@ import com.nukkitx.protocol.bedrock.data.command.CommandOriginType;
 import com.nukkitx.protocol.bedrock.data.command.CommandParam;
 import com.nukkitx.protocol.bedrock.data.entity.*;
 import com.nukkitx.protocol.bedrock.data.inventory.ItemData;
-import com.nukkitx.protocol.bedrock.data.skin.AnimationData;
 import com.nukkitx.protocol.bedrock.data.skin.ImageData;
 import com.nukkitx.protocol.bedrock.data.skin.SerializedSkin;
 import com.nukkitx.protocol.bedrock.data.structure.StructureSettings;
@@ -1006,16 +1005,6 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
 
     @Override
     public void writeSkin(ByteBuf buffer, SerializedSkin skin) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public AnimationData readAnimationData(ByteBuf buffer) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void writeAnimationData(ByteBuf buffer, AnimationData animation) {
         throw new UnsupportedOperationException();
     }
 

@@ -3,6 +3,7 @@ package com.nukkitx.protocol.bedrock.v113.serializer;
 import com.nukkitx.network.VarInts;
 import com.nukkitx.protocol.bedrock.BedrockPacketHelper;
 import com.nukkitx.protocol.bedrock.BedrockPacketSerializer;
+import com.nukkitx.protocol.bedrock.data.GameType;
 import com.nukkitx.protocol.bedrock.packet.SetPlayerGameTypePacket;
 import io.netty.buffer.ByteBuf;
 import lombok.AccessLevel;
@@ -14,11 +15,11 @@ public class SetPlayerGameTypeSerializer_v113 implements BedrockPacketSerializer
 
     @Override
     public void serialize(ByteBuf buffer, BedrockPacketHelper helper, SetPlayerGameTypePacket packet) {
-        VarInts.writeInt(buffer, packet.getGamemode());
+        VarInts.writeInt(buffer, packet.getGameType().ordinal());
     }
 
     @Override
     public void deserialize(ByteBuf buffer, BedrockPacketHelper helper, SetPlayerGameTypePacket packet) {
-        packet.setGamemode(VarInts.readInt(buffer));
+        packet.setGameType(GameType.from(VarInts.readInt(buffer)));
     }
 }

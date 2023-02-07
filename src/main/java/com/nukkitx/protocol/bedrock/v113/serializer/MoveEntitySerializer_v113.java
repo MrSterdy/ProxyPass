@@ -16,7 +16,9 @@ public class MoveEntitySerializer_v113 implements BedrockPacketSerializer<MoveEn
     public void serialize(ByteBuf buffer, BedrockPacketHelper helper, MoveEntityPacket packet) {
         VarInts.writeUnsignedLong(buffer, packet.getRuntimeEntityId());
         helper.writeVector3f(buffer, packet.getPosition());
-        helper.writeVector3f(buffer, packet.getRotation());
+        buffer.writeByte(packet.pitch);
+        buffer.writeByte(packet.headYaw);
+        buffer.writeByte(packet.yaw);
         buffer.writeBoolean(packet.isOnGround());
         buffer.writeBoolean(packet.isTeleported());
     }
@@ -25,7 +27,9 @@ public class MoveEntitySerializer_v113 implements BedrockPacketSerializer<MoveEn
     public void deserialize(ByteBuf buffer, BedrockPacketHelper helper, MoveEntityPacket packet) {
         packet.setRuntimeEntityId(VarInts.readUnsignedLong(buffer));
         packet.setPosition(helper.readVector3f(buffer));
-        packet.setRotation(helper.readVector3f(buffer));
+        packet.setPitch(buffer.readByte());
+        packet.setHeadYaw(buffer.readByte());
+        packet.setYaw(buffer.readByte());
         packet.setOnGround(buffer.readBoolean());
         packet.setTeleported(buffer.readBoolean());
     }

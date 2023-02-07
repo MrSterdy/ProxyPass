@@ -12,14 +12,7 @@ import com.nukkitx.network.util.Preconditions;
 import com.nukkitx.protocol.bedrock.data.*;
 import com.nukkitx.protocol.bedrock.data.command.*;
 import com.nukkitx.protocol.bedrock.data.entity.*;
-import com.nukkitx.protocol.bedrock.data.inventory.ContainerSlotType;
-import com.nukkitx.protocol.bedrock.data.inventory.InventoryActionData;
-import com.nukkitx.protocol.bedrock.data.inventory.InventorySource;
 import com.nukkitx.protocol.bedrock.data.inventory.ItemData;
-import com.nukkitx.protocol.bedrock.data.inventory.ItemStackRequest;
-import com.nukkitx.protocol.bedrock.data.inventory.descriptor.ItemDescriptorWithCount;
-import com.nukkitx.protocol.bedrock.data.inventory.stackrequestactions.StackRequestActionType;
-import com.nukkitx.protocol.bedrock.data.skin.AnimationData;
 import com.nukkitx.protocol.bedrock.data.skin.ImageData;
 import com.nukkitx.protocol.bedrock.data.skin.SerializedSkin;
 import com.nukkitx.protocol.bedrock.data.structure.StructureSettings;
@@ -44,8 +37,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.*;
 
-import static java.util.Objects.requireNonNull;
-
 public abstract class BedrockPacketHelper {
     protected static final InternalLogger log = InternalLoggerFactory.getInstance(BedrockPacketHelper.class);
 
@@ -57,8 +48,6 @@ public abstract class BedrockPacketHelper {
     protected final Int2ObjectBiMap<SoundEvent> soundEvents = new Int2ObjectBiMap<>();
     protected final Int2ObjectBiMap<LevelEventType> levelEvents = new Int2ObjectBiMap<>();
     protected final Int2ObjectBiMap<CommandParam> commandParams = new Int2ObjectBiMap<>();
-    protected final Int2ObjectBiMap<ResourcePackType> resourcePackTypes = new Int2ObjectBiMap<>();
-    protected final Int2ObjectBiMap<ContainerSlotType> containerSlotTypes = new Int2ObjectBiMap<>();
 
     protected BedrockPacketHelper() {
         gameRuleTypes.defaultReturnValue(-1);
@@ -181,18 +170,6 @@ public abstract class BedrockPacketHelper {
     public final void removeCommandParam(CommandParam type) {
         this.commandParams.remove(type);
     }
-    
-    public final void addResourcePackType(int index, ResourcePackType resourcePackType) {
-        this.resourcePackTypes.put(index, resourcePackType);
-    }
-
-    public final ResourcePackType getResourcePackType(int index) {
-        return this.resourcePackTypes.get(index);
-    }
-
-    public final int getResourcePackTypeId(ResourcePackType resourcePackType) {
-        return this.resourcePackTypes.get(resourcePackType);
-    }
 
     protected abstract void registerEntityData();
 
@@ -253,10 +230,6 @@ public abstract class BedrockPacketHelper {
     public abstract SerializedSkin readSkin(ByteBuf buffer);
 
     public abstract void writeSkin(ByteBuf buffer, SerializedSkin skin);
-
-    public abstract AnimationData readAnimationData(ByteBuf buffer);
-
-    public abstract void writeAnimationData(ByteBuf buffer, AnimationData animation);
 
     public abstract ImageData readImage(ByteBuf buffer);
 
@@ -573,67 +546,6 @@ public abstract class BedrockPacketHelper {
         }
     }
 
-    public boolean readInventoryActions(ByteBuf buffer, BedrockSession session, List<InventoryActionData> actions) {
-        this.readArray(buffer, actions, session, (buf, helper, aSession) -> {
-            InventorySource source = helper.readSource(buf);
-            int slot = VarInts.readUnsignedInt(buf);
-            ItemData fromItem = helper.readItem(buf, aSession);
-            ItemData toItem = helper.readItem(buf, aSession);
-
-            return new InventoryActionData(source, slot, fromItem, toItem);
-        });
-        return false;
-    }
-
-    public void writeInventoryActions(ByteBuf buffer, BedrockSession session, List<InventoryActionData> actions,
-                                      boolean hasNetworkIds) {
-        this.writeArray(buffer, actions, session, (buf, helper, aSession, action) -> {
-            helper.writeSource(buf, action.getSource());
-            VarInts.writeUnsignedInt(buf, action.getSlot());
-            helper.writeItem(buf, action.getFromItem(), aSession);
-            helper.writeItem(buf, action.getToItem(), aSession);
-        });
-    }
-
-    public InventorySource readSource(ByteBuf buffer) {
-        InventorySource.Type type = InventorySource.Type.byId(VarInts.readUnsignedInt(buffer));
-
-        switch (type) {
-            case CONTAINER:
-                int containerId = VarInts.readInt(buffer);
-                return InventorySource.fromContainerWindowId(containerId);
-            case GLOBAL:
-                return InventorySource.fromGlobalInventory();
-            case WORLD_INTERACTION:
-                InventorySource.Flag flag = InventorySource.Flag.values()[VarInts.readUnsignedInt(buffer)];
-                return InventorySource.fromWorldInteraction(flag);
-            case CREATIVE:
-                return InventorySource.fromCreativeInventory();
-            case NON_IMPLEMENTED_TODO:
-                containerId = VarInts.readInt(buffer);
-                return InventorySource.fromNonImplementedTodo(containerId);
-            default:
-                return InventorySource.fromInvalid();
-        }
-    }
-
-    public void writeSource(ByteBuf buffer, InventorySource inventorySource) {
-        requireNonNull(inventorySource, "InventorySource was null");
-
-        VarInts.writeUnsignedInt(buffer, inventorySource.getType().id());
-
-        switch (inventorySource.getType()) {
-            case CONTAINER:
-            case UNTRACKED_INTERACTION_UI:
-            case NON_IMPLEMENTED_TODO:
-                VarInts.writeInt(buffer, inventorySource.getContainerId());
-                break;
-            case WORLD_INTERACTION:
-                VarInts.writeUnsignedInt(buffer, inventorySource.getFlag().ordinal());
-                break;
-        }
-    }
-
     public CommandEnumConstraintData readCommandEnumConstraints(ByteBuf buffer, List<CommandEnumData> enums, List<String> enumValues) {
         int valueIndex = buffer.readIntLE();
         int enumIndex = buffer.readIntLE();
@@ -675,75 +587,5 @@ public abstract class BedrockPacketHelper {
      */
     public String getBlockingItemIdentifier() {
         return "minecraft:shield";
-    }
-
-    public void readExperiments(ByteBuf buffer, List<ExperimentData> experiments) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void writeExperiments(ByteBuf buffer, List<ExperimentData> experiments) {
-        throw new UnsupportedOperationException();
-    }
-
-    protected void registerStackActionRequestTypes() {
-        throw new UnsupportedOperationException();
-    }
-
-    public StackRequestActionType getStackRequestActionTypeFromId(int id) {
-        throw new UnsupportedOperationException();
-    }
-
-    public int getIdFromStackRequestActionType(StackRequestActionType type) {
-        throw new UnsupportedOperationException();
-    }
-
-    public ItemStackRequest readItemStackRequest(ByteBuf buffer, BedrockSession session) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void writeItemStackRequest(ByteBuf buffer, BedrockSession session, ItemStackRequest request) {
-        throw new UnsupportedOperationException();
-    }
-
-    public <O> O readOptional(ByteBuf buffer, O emptyValue, Function<ByteBuf, O> function) {
-        if (buffer.readBoolean()) {
-            return function.apply(buffer);
-        }
-        return emptyValue;
-    }
-
-    public <T> void writeOptional(ByteBuf buffer, Predicate<T> isPresent, T object, BiConsumer<ByteBuf, T> consumer) {
-        Preconditions.checkNotNull(object, "object");
-        Preconditions.checkNotNull(consumer, "read consumer");
-
-        boolean exists = isPresent.test(object);
-        buffer.writeBoolean(exists);
-        if (exists) {
-            consumer.accept(buffer, object);
-        }
-    }
-
-    public void writeEntityProperties(ByteBuf buffer, EntityProperties properties) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void readEntityProperties(ByteBuf buffer, EntityProperties properties) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void writeContainerSlotType(ByteBuf buffer, ContainerSlotType slotType) {
-        throw new UnsupportedOperationException();
-    }
-
-    public ContainerSlotType readContainerSlotType(ByteBuf buffer) {
-        throw new UnsupportedOperationException();
-    }
-
-    protected ItemDescriptorWithCount readIngredient(ByteBuf buffer, BedrockPacketHelper helper) {
-        throw new UnsupportedOperationException();
-    }
-
-    protected void writeIngredient(ByteBuf buffer, ItemDescriptorWithCount ingredient) {
-        throw new UnsupportedOperationException();
     }
 }

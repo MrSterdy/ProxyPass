@@ -2,7 +2,6 @@ package com.nukkitx.protocol.bedrock.packet;
 
 import com.nukkitx.protocol.bedrock.BedrockPacket;
 import com.nukkitx.protocol.bedrock.BedrockPacketType;
-import com.nukkitx.protocol.bedrock.annotation.NoEncryption;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,11 +9,10 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
-@NoEncryption // This is sent in plain text to complete the Diffie Hellman key exchange.
 public class ServerToClientHandshakePacket extends BedrockPacket {
     private String publicKey;
 
-    private String jwt;
+    private byte[] serverToken;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {

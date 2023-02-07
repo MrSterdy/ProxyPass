@@ -33,14 +33,14 @@ public class StartGamePacket extends BedrockPacket {
     private Vector3f playerPosition;
     private Vector2f playerRotation;
 
-    private Dimension dimension;
-    private Generator generator;
-
     private long seed;
+
+    private DimensionType dimension;
+    private GeneratorType generator;
 
     private GameType worldGameType;
 
-    private Difficulty difficulty;
+    private DifficultyType difficulty;
 
     private Vector3i spawnPosition;
 
@@ -74,24 +74,5 @@ public class StartGamePacket extends BedrockPacket {
 
     public BedrockPacketType getPacketType() {
         return BedrockPacketType.START_GAME;
-    }
-
-    public enum Generator {
-        OLD,
-        INFINITE,
-        FLAT
-    }
-
-    public enum Dimension {
-        OVERWORLD,
-        NETHER,
-        END
-    }
-
-    public enum Difficulty {
-        PEACEFUL,
-        EASY,
-        NORMAL,
-        HARD
     }
 }

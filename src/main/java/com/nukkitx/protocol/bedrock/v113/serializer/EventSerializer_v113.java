@@ -4,14 +4,13 @@ import com.nukkitx.network.VarInts;
 import com.nukkitx.network.util.Preconditions;
 import com.nukkitx.protocol.bedrock.BedrockPacketHelper;
 import com.nukkitx.protocol.bedrock.BedrockPacketSerializer;
+import com.nukkitx.protocol.bedrock.data.DimensionType;
 import com.nukkitx.protocol.bedrock.data.event.*;
 import com.nukkitx.protocol.bedrock.packet.EventPacket;
 import com.nukkitx.protocol.bedrock.util.TriConsumer;
 import io.netty.buffer.ByteBuf;
 
-import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.function.BiFunction;
 
 import static com.nukkitx.protocol.bedrock.data.event.EventDataType.*;
@@ -35,9 +34,6 @@ public class EventSerializer_v113 implements BedrockPacketSerializer<EventPacket
         this.readers.put(BOSS_KILLED, this::readBossKilled);
         this.readers.put(AGENT_COMMAND, this::readAgentCommand);
         this.readers.put(AGENT_CREATED, (b, h) -> AgentCreatedEventData.INSTANCE);
-        this.readers.put(PATTERN_REMOVED, this::readPatternRemoved);
-        this.readers.put(SLASH_COMMAND_EXECUTED, this::readSlashCommandExecuted);
-        this.readers.put(FISH_BUCKETED, this::readFishBucketed);
 
         this.writers.put(ACHIEVEMENT_AWARDED, this::writeAchievementAwarded);
         this.writers.put(ENTITY_INTERACT, this::writeEntityInteract);
@@ -50,9 +46,6 @@ public class EventSerializer_v113 implements BedrockPacketSerializer<EventPacket
         this.writers.put(AGENT_COMMAND, this::writeAgentCommand);
         this.writers.put(AGENT_CREATED, (b, h, e) -> {
         });
-        this.writers.put(PATTERN_REMOVED, this::writePatternRemoved);
-        this.writers.put(SLASH_COMMAND_EXECUTED, this::writeSlashCommandExecuted);
-        this.writers.put(FISH_BUCKETED, this::writeFishBucketed);
     }
 
     @Override
@@ -117,25 +110,24 @@ public class EventSerializer_v113 implements BedrockPacketSerializer<EventPacket
     }
 
     protected PortalBuiltEventData readPortalBuilt(ByteBuf buffer, BedrockPacketHelper helper) {
-        int dimensionId = VarInts.readInt(buffer);
-        return new PortalBuiltEventData(dimensionId);
+        return new PortalBuiltEventData(DimensionType.from(VarInts.readInt(buffer)));
     }
 
     protected void writePortalBuilt(ByteBuf buffer, BedrockPacketHelper helper, EventData eventData) {
         PortalBuiltEventData event = (PortalBuiltEventData) eventData;
-        VarInts.writeInt(buffer, event.getDimensionId());
+        VarInts.writeInt(buffer, event.getDimension().ordinal());
     }
 
     protected PortalUsedEventData readPortalUsed(ByteBuf buffer, BedrockPacketHelper helper) {
-        int fromDimensionId = VarInts.readInt(buffer);
-        int toDimensionId = VarInts.readInt(buffer);
-        return new PortalUsedEventData(fromDimensionId, toDimensionId);
+        int from = VarInts.readInt(buffer);
+        int to = VarInts.readInt(buffer);
+        return new PortalUsedEventData(DimensionType.from(from), DimensionType.from(to));
     }
 
     protected void writePortalUsed(ByteBuf buffer, BedrockPacketHelper helper, EventData eventData) {
         PortalUsedEventData event = (PortalUsedEventData) eventData;
-        VarInts.writeInt(buffer, event.getFromDimensionId());
-        VarInts.writeInt(buffer, event.getToDimensionId());
+        VarInts.writeInt(buffer, event.getFrom().ordinal());
+        VarInts.writeInt(buffer, event.getTo().ordinal());
     }
 
     protected MobKilledEventData readMobKilled(ByteBuf buffer, BedrockPacketHelper helper) {
@@ -213,56 +205,5 @@ public class EventSerializer_v113 implements BedrockPacketSerializer<EventPacket
         helper.writeString(buffer, event.getCommand());
         helper.writeString(buffer, event.getDataKey());
         helper.writeString(buffer, event.getOutput());
-    }
-
-    protected PatternRemovedEventData readPatternRemoved(ByteBuf buffer, BedrockPacketHelper helper) {
-        int itemId = VarInts.readInt(buffer);
-        int auxValue = VarInts.readInt(buffer);
-        int patternsSize = VarInts.readInt(buffer);
-        int patternIndex = VarInts.readInt(buffer);
-        int patternColor = VarInts.readInt(buffer);
-        return new PatternRemovedEventData(itemId, auxValue, patternsSize, patternIndex, patternColor);
-    }
-
-    protected void writePatternRemoved(ByteBuf buffer, BedrockPacketHelper helper, EventData eventData) {
-        PatternRemovedEventData event = (PatternRemovedEventData) eventData;
-        VarInts.writeInt(buffer, event.getItemId());
-        VarInts.writeInt(buffer, event.getAuxValue());
-        VarInts.writeInt(buffer, event.getPatternsSize());
-        VarInts.writeInt(buffer, event.getPatternIndex());
-        VarInts.writeInt(buffer, event.getPatternColor());
-    }
-
-    protected SlashCommandExecutedEventData readSlashCommandExecuted(ByteBuf buffer, BedrockPacketHelper helper) {
-        int successCount = VarInts.readInt(buffer);
-        VarInts.readInt(buffer);
-        String commandName = helper.readString(buffer);
-        List<String> outputMessages = Arrays.asList(helper.readString(buffer).split(";"));
-        return new SlashCommandExecutedEventData(commandName, successCount, outputMessages);
-    }
-
-    protected void writeSlashCommandExecuted(ByteBuf buffer, BedrockPacketHelper helper, EventData eventData) {
-        SlashCommandExecutedEventData event = (SlashCommandExecutedEventData) eventData;
-        VarInts.writeInt(buffer, event.getSuccessCount());
-        List<String> outputMessages = event.getOutputMessages();
-        VarInts.writeInt(buffer, outputMessages.size());
-        helper.writeString(buffer, event.getCommandName());
-        helper.writeString(buffer, String.join(";", outputMessages));
-    }
-
-    protected FishBucketedEventData readFishBucketed(ByteBuf buffer, BedrockPacketHelper helper) {
-        int pattern = VarInts.readInt(buffer);
-        int preset = VarInts.readInt(buffer);
-        int bucketedEntityType = VarInts.readInt(buffer);
-        boolean isRelease = buffer.readBoolean();
-        return new FishBucketedEventData(pattern, preset, bucketedEntityType, isRelease);
-    }
-
-    protected void writeFishBucketed(ByteBuf buffer, BedrockPacketHelper helper, EventData eventData) {
-        FishBucketedEventData event = (FishBucketedEventData) eventData;
-        VarInts.writeInt(buffer, event.getPattern());
-        VarInts.writeInt(buffer, event.getPreset());
-        VarInts.writeInt(buffer, event.getBucketedEntityType());
-        buffer.writeBoolean(event.isReleaseEvent());
     }
 }

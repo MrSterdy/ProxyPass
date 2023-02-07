@@ -3,8 +3,10 @@ package com.nukkitx.protocol.bedrock.v113.serializer;
 import com.nukkitx.network.VarInts;
 import com.nukkitx.protocol.bedrock.BedrockPacketHelper;
 import com.nukkitx.protocol.bedrock.BedrockPacketSerializer;
+import com.nukkitx.protocol.bedrock.data.DifficultyType;
+import com.nukkitx.protocol.bedrock.data.DimensionType;
 import com.nukkitx.protocol.bedrock.data.GameType;
-import com.nukkitx.protocol.bedrock.data.PlayerPermission;
+import com.nukkitx.protocol.bedrock.data.GeneratorType;
 import com.nukkitx.protocol.bedrock.packet.StartGamePacket;
 import io.netty.buffer.ByteBuf;
 import lombok.AccessLevel;
@@ -13,8 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StartGameSerializer_v113 implements BedrockPacketSerializer<StartGamePacket> {
     public static final StartGameSerializer_v113 INSTANCE = new StartGameSerializer_v113();
-
-    protected static final PlayerPermission[] PLAYER_PERMISSIONS = PlayerPermission.values();
 
     @Override
     public void serialize(ByteBuf buffer, BedrockPacketHelper helper, StartGamePacket packet) {
@@ -62,10 +62,10 @@ public class StartGameSerializer_v113 implements BedrockPacketSerializer<StartGa
 
     protected void readLevelSettings(ByteBuf buffer, BedrockPacketHelper helper, StartGamePacket packet) {
         packet.setSeed(VarInts.readInt(buffer));
-        packet.setDimension(StartGamePacket.Dimension.values()[VarInts.readInt(buffer)]);
-        packet.setGenerator(StartGamePacket.Generator.values()[VarInts.readInt(buffer)]);
+        packet.setDimension(DimensionType.from(VarInts.readInt(buffer)));
+        packet.setGenerator(GeneratorType.from(VarInts.readInt(buffer)));
         packet.setWorldGameType(GameType.from(VarInts.readInt(buffer)));
-        packet.setDifficulty(StartGamePacket.Difficulty.values()[VarInts.readInt(buffer)]);
+        packet.setDifficulty(DifficultyType.from(VarInts.readInt(buffer)));
         packet.setSpawnPosition(helper.readBlockPosition(buffer));
         packet.setAchievementsDisabled(buffer.readBoolean());
         packet.setDayCycleStopTime(VarInts.readInt(buffer));

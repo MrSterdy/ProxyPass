@@ -141,7 +141,7 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
             login.setProtocolVersion(ProxyPass.PROTOCOL_VERSION);
             login.setVersion(LoginPacket.Version.VANILLA);
 
-            session.sendPacketImmediately(login);
+            downstream.sendPacketImmediately(login);
 
             this.session.setBatchHandler(proxySession.getUpstreamBatchHandler());
             downstream.setBatchHandler(proxySession.getDownstreamTailHandler());

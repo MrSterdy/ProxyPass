@@ -1,5 +1,6 @@
 package com.nukkitx.protocol.bedrock.packet;
 
+import com.nukkitx.math.vector.Vector2f;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.protocol.bedrock.BedrockPacket;
 import com.nukkitx.protocol.bedrock.BedrockPacketType;
@@ -13,7 +14,10 @@ public class MoveEntityPacket extends BedrockPacket {
     private long runtimeEntityId;
 
     private Vector3f position;
-    private Vector3f rotation;
+
+    public byte pitch;
+    public byte headYaw;
+    public byte yaw;
 
     private boolean onGround;
     private boolean teleported;

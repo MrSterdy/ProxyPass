@@ -19,10 +19,10 @@ log-to: file
 
 ## Packets to ignore to make your log more refined. These default packet are generally spammed
 ignored-packets:
-  - "NetworkStackLatencyPacket"
-  - "LevelChunkPacket"
+  - "InteractPacket"
+  - "MoveEntityPacket"
   - "MovePlayerPacket"
-  - "PlayerAuthInputPacket"
-  - "NetworkChunkPublisherUpdatePacket"
-  - "ClientCacheBlobStatusPacket"
-  - "ClientCacheMissResponsePacket"
+  - "EntityEventPacket"
+  - "SetEntityDataPacket"
+  - "LevelSoundEventPacket"
+  - "SetEntityMotionPacket"
