@@ -31,13 +31,12 @@ public class AdventureSettingsSerializer_v113 implements BedrockPacketSerializer
         FLAGS_TO_BIT.put(NO_PVP, (1 << 1));
         FLAGS_TO_BIT.put(NO_PVM, (1 << 2));
         FLAGS_TO_BIT.put(NO_MVP, (1 << 3));
-        // FLAGS_TO_BIT.put(NO_EVP, (1 << 4));
+        FLAGS_TO_BIT.put(NO_EVP, (1 << 4));
         FLAGS_TO_BIT.put(AUTO_JUMP, (1 << 5));
-        FLAGS_TO_BIT.put(MAY_FLY, (1 << 6));
+        FLAGS_TO_BIT.put(ALLOW_FLIGHT, (1 << 6));
         FLAGS_TO_BIT.put(NO_CLIP, (1 << 7));
-        FLAGS_TO_BIT.put(WORLD_BUILDER, (1 << 8));
-        FLAGS_TO_BIT.put(FLYING, (1 << 9));
-        FLAGS_TO_BIT.put(MUTED, (1 << 10));
+        FLAGS_TO_BIT.put(FLYING, (1 << 8));
+        FLAGS_TO_BIT.put(MUTED, (1 << 9));
     }
 
 
