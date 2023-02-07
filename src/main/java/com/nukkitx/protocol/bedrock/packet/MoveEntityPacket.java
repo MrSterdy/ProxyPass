@@ -1,6 +1,5 @@
 package com.nukkitx.protocol.bedrock.packet;
 
-import com.nukkitx.math.vector.Vector2f;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.protocol.bedrock.BedrockPacket;
 import com.nukkitx.protocol.bedrock.BedrockPacketType;
@@ -28,6 +27,6 @@ public class MoveEntityPacket extends BedrockPacket {
     }
 
     public BedrockPacketType getPacketType() {
-        return BedrockPacketType.MOVE_ENTITY_ABSOLUTE;
+        return BedrockPacketType.MOVE_ENTITY;
     }
 }
