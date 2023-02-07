@@ -27,6 +27,7 @@ public class UseItemSerializer_v113 implements BedrockPacketSerializer<UseItemPa
     @Override
     public void deserialize(ByteBuf buffer, BedrockPacketHelper helper, UseItemPacket packet, BedrockSession session) {
         packet.setBlockPosition(helper.readBlockPosition(buffer));
+        packet.setHotbarSlot(VarInts.readUnsignedInt(buffer));
         packet.setFace(VarInts.readInt(buffer));
         packet.setFacePosition(helper.readVector3f(buffer));
         packet.setPosition(helper.readVector3f(buffer));
