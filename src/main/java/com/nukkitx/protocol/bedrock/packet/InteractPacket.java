@@ -27,7 +27,7 @@ public class InteractPacket extends BedrockPacket {
         INTERACT,
         DAMAGE,
         LEAVE_VEHICLE,
-        MOUSEOVER,
+        HOVER,
         NPC_OPEN,
         OPEN_INVENTORY
     }
