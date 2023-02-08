@@ -37,7 +37,6 @@ public class UpdateBlockPacket extends BedrockPacket {
         NEIGHBORS,
         NETWORK,
         NO_GRAPHIC,
-        UNUSED,
         PRIORITY
     }
 }

@@ -5,6 +5,7 @@ import com.nukkitx.network.util.Preconditions;
 import com.nukkitx.protocol.bedrock.BedrockPacketHelper;
 import com.nukkitx.protocol.bedrock.BedrockPacketSerializer;
 import com.nukkitx.protocol.bedrock.data.DimensionType;
+import com.nukkitx.protocol.bedrock.data.entity.EntityDamageCause;
 import com.nukkitx.protocol.bedrock.data.event.*;
 import com.nukkitx.protocol.bedrock.packet.EventPacket;
 import com.nukkitx.protocol.bedrock.util.TriConsumer;
@@ -80,7 +81,7 @@ public class EventSerializer_v113 implements BedrockPacketSerializer<EventPacket
             throw new UnsupportedOperationException("Unknown event type " + type);
         }
 
-        function.apply(buffer, helper);
+        packet.setEventData(function.apply(buffer, helper));
     }
 
     protected AchievementAwardedEventData readAchievementAwarded(ByteBuf buffer, BedrockPacketHelper helper) {
@@ -95,18 +96,14 @@ public class EventSerializer_v113 implements BedrockPacketSerializer<EventPacket
 
     protected EntityInteractEventData readEntityInteract(ByteBuf buffer, BedrockPacketHelper helper) {
         int interactionType = VarInts.readInt(buffer);
-        int interactionEntityType = VarInts.readInt(buffer);
-        int entityVariant = VarInts.readInt(buffer);
         int entityColor = buffer.readUnsignedByte();
-        return new EntityInteractEventData(interactionType, interactionEntityType, entityVariant, entityColor);
+        return new EntityInteractEventData(interactionType, entityColor);
     }
 
     protected void writeEntityInteract(ByteBuf buffer, BedrockPacketHelper helper, EventData eventData) {
         EntityInteractEventData event = (EntityInteractEventData) eventData;
         VarInts.writeInt(buffer, event.getInteractionType());
-        VarInts.writeInt(buffer, event.getLegacyEntityTypeId());
-        VarInts.writeInt(buffer, event.getVariant());
-        buffer.writeByte(event.getPaletteColor());
+        buffer.writeByte(event.getEntityColor());
     }
 
     protected PortalBuiltEventData readPortalBuilt(ByteBuf buffer, BedrockPacketHelper helper) {
@@ -115,7 +112,7 @@ public class EventSerializer_v113 implements BedrockPacketSerializer<EventPacket
 
     protected void writePortalBuilt(ByteBuf buffer, BedrockPacketHelper helper, EventData eventData) {
         PortalBuiltEventData event = (PortalBuiltEventData) eventData;
-        VarInts.writeInt(buffer, event.getDimension().ordinal());
+        VarInts.writeInt(buffer, event.getWhere().ordinal());
     }
 
     protected PortalUsedEventData readPortalUsed(ByteBuf buffer, BedrockPacketHelper helper) {
@@ -133,46 +130,41 @@ public class EventSerializer_v113 implements BedrockPacketSerializer<EventPacket
     protected MobKilledEventData readMobKilled(ByteBuf buffer, BedrockPacketHelper helper) {
         long killerUniqueEntityId = VarInts.readLong(buffer);
         long victimUniqueEntityId = VarInts.readLong(buffer);
-        int entityDamageCause = VarInts.readInt(buffer);
-        int villagerTradeTier = VarInts.readInt(buffer);
-        String villagerDisplayName = helper.readString(buffer);
-        return new MobKilledEventData(killerUniqueEntityId, victimUniqueEntityId, -1, entityDamageCause,
-                villagerTradeTier, villagerDisplayName);
+        EntityDamageCause damageCause = EntityDamageCause.from(VarInts.readInt(buffer));
+        return new MobKilledEventData(killerUniqueEntityId, victimUniqueEntityId, damageCause);
     }
 
     protected void writeMobKilled(ByteBuf buffer, BedrockPacketHelper helper, EventData eventData) {
         MobKilledEventData event = (MobKilledEventData) eventData;
         VarInts.writeLong(buffer, event.getKillerUniqueEntityId());
         VarInts.writeLong(buffer, event.getVictimUniqueEntityId());
-        VarInts.writeInt(buffer, event.getEntityDamageCause());
-        VarInts.writeInt(buffer, event.getVillagerTradeTier());
-        helper.writeString(buffer, event.getVillagerDisplayName());
+        VarInts.writeInt(buffer, event.getDamageCause().ordinal());
     }
 
     protected CauldronUsedEventData readCauldronUsed(ByteBuf buffer, BedrockPacketHelper helper) {
-        int potionId = VarInts.readInt(buffer);
         int color = VarInts.readInt(buffer);
+        int potionId = VarInts.readUnsignedInt(buffer);
         int fillLevel = VarInts.readInt(buffer);
-        return new CauldronUsedEventData(potionId, color, fillLevel);
+        return new CauldronUsedEventData(color, potionId, fillLevel);
     }
 
     protected void writeCauldronUsed(ByteBuf buffer, BedrockPacketHelper helper, EventData eventData) {
         CauldronUsedEventData event = (CauldronUsedEventData) eventData;
-        VarInts.writeUnsignedInt(buffer, event.getPotionId());
         VarInts.writeInt(buffer, event.getColor());
+        VarInts.writeUnsignedInt(buffer, event.getPotionId());
         VarInts.writeInt(buffer, event.getFillLevel());
     }
 
     protected PlayerDiedEventData readPlayerDied(ByteBuf buffer, BedrockPacketHelper helper) {
         int attackerEntityId = VarInts.readInt(buffer);
-        int entityDamageCause = VarInts.readInt(buffer);
-        return new PlayerDiedEventData(attackerEntityId, -1, entityDamageCause, false);
+        EntityDamageCause damageCause = EntityDamageCause.from(VarInts.readInt(buffer));
+        return new PlayerDiedEventData(attackerEntityId, -1, damageCause);
     }
 
     protected void writePlayerDied(ByteBuf buffer, BedrockPacketHelper helper, EventData eventData) {
         PlayerDiedEventData event = (PlayerDiedEventData) eventData;
         VarInts.writeInt(buffer, event.getAttackerEntityId());
-        VarInts.writeInt(buffer, event.getEntityDamageCause());
+        VarInts.writeInt(buffer, event.getDamageCause().ordinal());
     }
 
     protected BossKilledEventData readBossKilled(ByteBuf buffer, BedrockPacketHelper helper) {

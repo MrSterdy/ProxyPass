@@ -13,13 +13,13 @@ public class AvailableCommandsSerializer_v113 implements BedrockPacketSerializer
 
     @Override
     public void serialize(ByteBuf buffer, BedrockPacketHelper helper, AvailableCommandsPacket packet) {
-        helper.writeString(buffer, packet.getCommands());
+        helper.writeString(buffer, packet.getCommandsJson());
         helper.writeString(buffer, packet.getUnknownString());
     }
 
     @Override
     public void deserialize(ByteBuf buffer, BedrockPacketHelper helper, AvailableCommandsPacket packet) {
-        packet.setCommands(helper.readString(buffer));
+        packet.setCommandsJson(helper.readString(buffer));
         packet.setUnknownString(helper.readString(buffer));
     }
 }

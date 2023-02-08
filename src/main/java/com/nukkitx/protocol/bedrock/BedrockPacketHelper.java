@@ -10,13 +10,13 @@ import com.nukkitx.nbt.NbtUtils;
 import com.nukkitx.network.VarInts;
 import com.nukkitx.network.util.Preconditions;
 import com.nukkitx.protocol.bedrock.data.*;
-import com.nukkitx.protocol.bedrock.data.command.*;
+import com.nukkitx.protocol.bedrock.data.command.CommandOriginData;
 import com.nukkitx.protocol.bedrock.data.entity.*;
 import com.nukkitx.protocol.bedrock.data.inventory.ItemData;
 import com.nukkitx.protocol.bedrock.data.skin.ImageData;
 import com.nukkitx.protocol.bedrock.data.skin.SerializedSkin;
-import com.nukkitx.protocol.bedrock.data.structure.StructureSettings;
 import com.nukkitx.protocol.bedrock.util.TriConsumer;
+import com.nukkitx.protocol.serializer.PacketHelper;
 import com.nukkitx.protocol.util.Int2ObjectBiMap;
 import com.nukkitx.protocol.util.QuadConsumer;
 import com.nukkitx.protocol.util.TriFunction;
@@ -33,11 +33,10 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.*;
 
-public abstract class BedrockPacketHelper {
+public abstract class BedrockPacketHelper implements PacketHelper {
     protected static final InternalLogger log = InternalLoggerFactory.getInstance(BedrockPacketHelper.class);
 
     protected final Int2ObjectBiMap<EntityData> entityData = new Int2ObjectBiMap<>();
@@ -47,7 +46,6 @@ public abstract class BedrockPacketHelper {
     protected final Object2IntMap<Class<?>> gameRuleTypes = new Object2IntOpenHashMap<>(3, 0.5f);
     protected final Int2ObjectBiMap<SoundEvent> soundEvents = new Int2ObjectBiMap<>();
     protected final Int2ObjectBiMap<LevelEventType> levelEvents = new Int2ObjectBiMap<>();
-    protected final Int2ObjectBiMap<CommandParam> commandParams = new Int2ObjectBiMap<>();
 
     protected BedrockPacketHelper() {
         gameRuleTypes.defaultReturnValue(-1);
@@ -59,7 +57,6 @@ public abstract class BedrockPacketHelper {
         this.registerGameRuleTypes();
         this.registerSoundEvents();
         this.registerLevelEvents();
-        this.registerCommandParams();
         this.registerResourcePackTypes();
         this.registerContainerSlotTypes();
     }
@@ -146,31 +143,6 @@ public abstract class BedrockPacketHelper {
 
     }
 
-    public final void addCommandParam(int index, CommandParam commandParam) {
-        this.commandParams.put(index, commandParam);
-    }
-
-    public final CommandParam getCommandParam(int index) {
-        CommandParam commandParam = this.commandParams.get(index);
-        if (commandParam == null) {
-            log.debug("Requested undefined CommandParam {}", index);
-            return new CommandParam(index);
-        }
-        return commandParam;
-    }
-
-    public final int getCommandParamId(CommandParam commandParam) {
-        return this.commandParams.get(commandParam);
-    }
-
-    public final void removeCommandParam(int index) {
-        this.commandParams.remove(index);
-    }
-
-    public final void removeCommandParam(CommandParam type) {
-        this.commandParams.remove(type);
-    }
-
     protected abstract void registerEntityData();
 
     protected abstract void registerEntityFlags();
@@ -182,8 +154,6 @@ public abstract class BedrockPacketHelper {
     protected abstract void registerGameRuleTypes();
 
     protected abstract void registerSoundEvents();
-
-    protected abstract void registerCommandParams();
 
     protected abstract void registerResourcePackTypes();
 
@@ -218,14 +188,6 @@ public abstract class BedrockPacketHelper {
     public abstract void readEntityData(ByteBuf buffer, EntityDataMap entityData);
 
     public abstract void writeEntityData(ByteBuf buffer, EntityDataMap entityData);
-
-    public abstract CommandEnumData readCommandEnum(ByteBuf buffer, boolean soft);
-
-    public abstract void writeCommandEnum(ByteBuf buffer, CommandEnumData commandEnum);
-
-    public abstract StructureSettings readStructureSettings(ByteBuf buffer);
-
-    public abstract void writeStructureSettings(ByteBuf buffer, StructureSettings settings);
 
     public abstract SerializedSkin readSkin(ByteBuf buffer);
 
@@ -544,48 +506,5 @@ public abstract class BedrockPacketHelper {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public CommandEnumConstraintData readCommandEnumConstraints(ByteBuf buffer, List<CommandEnumData> enums, List<String> enumValues) {
-        int valueIndex = buffer.readIntLE();
-        int enumIndex = buffer.readIntLE();
-        CommandEnumConstraintType[] constraints = readArray(buffer, new CommandEnumConstraintType[0],
-                buf -> CommandEnumConstraintType.byId(buffer.readByte()));
-
-        return new CommandEnumConstraintData(
-                enumValues.get(valueIndex),
-                enums.get(enumIndex),
-                constraints
-        );
-    }
-
-    public void writeCommandEnumConstraints(ByteBuf buffer, CommandEnumConstraintData data, List<CommandEnumData> enums, List<String> enumValues) {
-        buffer.writeIntLE(enumValues.indexOf(data.getOption()));
-        buffer.writeIntLE(enums.indexOf(data.getEnumData()));
-        writeArray(buffer, data.getConstraints(), (buf, constraint) -> {
-            buf.writeByte(constraint.ordinal());
-        });
-    }
-
-    /**
-     * Return true if the item id has a blockingTicks attached.
-     * Only a shield should return true
-     *
-     * @param id ID of item
-     * @param session BedrockSession which holds correct blockingId
-     * @return true if reading/writing blockingTicks
-     */
-    public boolean isBlockingItem(int id, BedrockSession session) {
-        int blockingId = session.getHardcodedBlockingId().get();
-        return id == blockingId;
-    }
-
-    /**
-     * In case of identifier being different in any version,
-     * helper can be used to return correct identifier.
-     * @return item identifier of shield.
-     */
-    public String getBlockingItemIdentifier() {
-        return "minecraft:shield";
     }
 }

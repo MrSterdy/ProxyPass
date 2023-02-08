@@ -13,15 +13,11 @@ import com.nukkitx.protocol.bedrock.BedrockSession;
 import com.nukkitx.protocol.bedrock.data.GameRuleData;
 import com.nukkitx.protocol.bedrock.data.LevelEventType;
 import com.nukkitx.protocol.bedrock.data.SoundEvent;
-import com.nukkitx.protocol.bedrock.data.command.CommandEnumData;
 import com.nukkitx.protocol.bedrock.data.command.CommandOriginData;
-import com.nukkitx.protocol.bedrock.data.command.CommandOriginType;
-import com.nukkitx.protocol.bedrock.data.command.CommandParam;
 import com.nukkitx.protocol.bedrock.data.entity.*;
 import com.nukkitx.protocol.bedrock.data.inventory.ItemData;
 import com.nukkitx.protocol.bedrock.data.skin.ImageData;
 import com.nukkitx.protocol.bedrock.data.skin.SerializedSkin;
-import com.nukkitx.protocol.bedrock.data.structure.StructureSettings;
 import com.nukkitx.protocol.bedrock.util.LittleEndianByteBufOutputStream;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -30,11 +26,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.nukkitx.protocol.bedrock.data.entity.EntityData.Type;
 
-@SuppressWarnings("PointlessBitwiseExpression")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
 
@@ -52,6 +46,7 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addEntityData(7, EntityData.AIR_SUPPLY);
         this.addEntityData(8, EntityData.EFFECT_COLOR);
         this.addEntityData(9, EntityData.EFFECT_AMBIENT);
+        this.addEntityData(10, EntityData.JUMP_DURATION);
         this.addEntityData(11, EntityData.HURT_TIME);
         this.addEntityData(12, EntityData.HURT_DIRECTION);
         this.addEntityData(13, EntityData.ROW_TIME_LEFT);
@@ -60,6 +55,10 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addEntityData(16, EntityData.MINECART_BLOCK);
         this.addEntityData(17, EntityData.MINECART_OFFSET);
         this.addEntityData(18, EntityData.MINECART_HAS_BLOCK);
+        this.addEntityData(19, EntityData.SWELL);
+        this.addEntityData(20, EntityData.OLD_SWELL);
+        this.addEntityData(21, EntityData.SWELL_DIRECTION);
+        this.addEntityData(22, EntityData.CHARGE_AMOUNT);
         this.addEntityData(23, EntityData.ENDERMAN_ITEM_ID);
         this.addEntityData(24, EntityData.ENDERMAN_ITEM_DAMAGE);
         this.addEntityData(25, EntityData.AGE);
@@ -69,6 +68,10 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addEntityData(30, EntityData.FIREBALL_X_POWER);
         this.addEntityData(31, EntityData.FIREBALL_Y_POWER);
         this.addEntityData(32, EntityData.FIREBALL_Z_POWER);
+        this.addEntityData(33, EntityData.AUX_POWER);
+        this.addEntityData(34, EntityData.FISH_X);
+        this.addEntityData(35, EntityData.FISH_Z);
+        this.addEntityData(36, EntityData.FISH_ANGLE);
         this.addEntityData(37, EntityData.POTION_AUX_VALUE);
         this.addEntityData(38, EntityData.LEASH_HOLDER_EID);
         this.addEntityData(39, EntityData.SCALE);
@@ -77,11 +80,15 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addEntityData(42, EntityData.URL_TAG);
         this.addEntityData(43, EntityData.MAX_AIR_SUPPLY);
         this.addEntityData(44, EntityData.MARK_VARIANT);
+        this.addEntityData(45, EntityData.CONTAINER_TYPE);
+        this.addEntityData(46, EntityData.CONTAINER_BASE_SIZE);
+        this.addEntityData(47, EntityData.CONTAINER_STRENGTH_MODIFIER);
         this.addEntityData(48, EntityData.BLOCK_TARGET);
         this.addEntityData(49, EntityData.WITHER_INVULNERABLE_TICKS);
         this.addEntityData(50, EntityData.WITHER_CENTER_TARGET);
         this.addEntityData(51, EntityData.WITHER_LEFT_TARGET);
         this.addEntityData(52, EntityData.WITHER_RIGHT_TARGET);
+        this.addEntityData(53, EntityData.WITHER_AERIAL_ATTACK);
         this.addEntityData(54, EntityData.BOUNDING_BOX_WIDTH);
         this.addEntityData(55, EntityData.BOUNDING_BOX_HEIGHT);
         this.addEntityData(56, EntityData.FUSE_LENGTH);
@@ -94,14 +101,19 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addEntityData(63, EntityData.AREA_EFFECT_CLOUD_PARTICLE_ID);
         this.addEntityData(64, EntityData.SHULKER_PEAK_HEIGHT);
         this.addEntityData(65, EntityData.SHULKER_ATTACH_FACE);
+        this.addEntityData(66, EntityData.SHULKER_UNKNOWN);
         this.addEntityData(67, EntityData.SHULKER_ATTACH_POS);
         this.addEntityData(68, EntityData.TRADE_PLAYER_EID);
+        this.addEntityData(70, EntityData.COMMAND_BLOCK_ENABLED); // Unsure
         this.addEntityData(71, EntityData.COMMAND_BLOCK_COMMAND);
         this.addEntityData(72, EntityData.COMMAND_BLOCK_LAST_OUTPUT);
         this.addEntityData(73, EntityData.COMMAND_BLOCK_TRACK_OUTPUT);
         this.addEntityData(74, EntityData.CONTROLLING_RIDER_SEAT_INDEX);
         this.addEntityData(75, EntityData.STRENGTH);
         this.addEntityData(76, EntityData.MAX_STRENGTH);
+        this.addEntityData(77, EntityData.EVOKER_SPELL_COLOR);
+        this.addEntityData(78, EntityData.ARMOR_STAND_POSE_INDEX);
+        this.addEntityData(79, EntityData.ENDER_CRYSTAL_TIME_OFFSET);
     }
 
     @Override
@@ -128,31 +140,27 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addEntityFlag(19, EntityFlag.CAN_CLIMB);
         this.addEntityFlag(20, EntityFlag.CAN_SWIM);
         this.addEntityFlag(21, EntityFlag.CAN_FLY);
-        this.addEntityFlag(22, EntityFlag.CAN_WALK);
-        this.addEntityFlag(23, EntityFlag.RESTING);
-        this.addEntityFlag(24, EntityFlag.SITTING);
-        this.addEntityFlag(25, EntityFlag.ANGRY);
-        this.addEntityFlag(26, EntityFlag.INTERESTED);
-        this.addEntityFlag(27, EntityFlag.CHARGED);
-        this.addEntityFlag(28, EntityFlag.TAMED);
-        this.addEntityFlag(29, EntityFlag.ORPHANED);
-        this.addEntityFlag(30, EntityFlag.LEASHED);
-        this.addEntityFlag(31, EntityFlag.SHEARED);
-        this.addEntityFlag(32, EntityFlag.GLIDING);
-        this.addEntityFlag(33, EntityFlag.ELDER);
-        this.addEntityFlag(34, EntityFlag.MOVING);
-        this.addEntityFlag(35, EntityFlag.BREATHING);
-        this.addEntityFlag(36, EntityFlag.CHESTED);
-        this.addEntityFlag(37, EntityFlag.STACKABLE);
-        this.addEntityFlag(38, EntityFlag.SHOW_BOTTOM);
-        this.addEntityFlag(39, EntityFlag.STANDING);
-        this.addEntityFlag(40, EntityFlag.SHAKING);
-        this.addEntityFlag(41, EntityFlag.IDLING);
-        this.addEntityFlag(42, EntityFlag.CASTING);
-        this.addEntityFlag(43, EntityFlag.CHARGING);
-        this.addEntityFlag(44, EntityFlag.WASD_CONTROLLED);
-        this.addEntityFlag(45, EntityFlag.CAN_POWER_JUMP);
-        this.addEntityFlag(46, EntityFlag.LINGERING);
+        this.addEntityFlag(22, EntityFlag.RESTING);
+        this.addEntityFlag(23, EntityFlag.SITTING);
+        this.addEntityFlag(24, EntityFlag.ANGRY);
+        this.addEntityFlag(25, EntityFlag.INTERESTED);
+        this.addEntityFlag(26, EntityFlag.CHARGED);
+        this.addEntityFlag(27, EntityFlag.TAMED);
+        this.addEntityFlag(28, EntityFlag.LEASHED);
+        this.addEntityFlag(29, EntityFlag.SHEARED);
+        this.addEntityFlag(30, EntityFlag.GLIDING);
+        this.addEntityFlag(31, EntityFlag.ELDER);
+        this.addEntityFlag(32, EntityFlag.MOVING);
+        this.addEntityFlag(33, EntityFlag.BREATHING);
+        this.addEntityFlag(34, EntityFlag.CHESTED);
+        this.addEntityFlag(35, EntityFlag.STACKABLE);
+        this.addEntityFlag(36, EntityFlag.SHOW_BOTTOM);
+        this.addEntityFlag(37, EntityFlag.STANDING);
+        this.addEntityFlag(38, EntityFlag.SHAKING);
+        this.addEntityFlag(39, EntityFlag.IDLING);
+        this.addEntityFlag(40, EntityFlag.CASTING);
+        this.addEntityFlag(41, EntityFlag.CHARGING);
+        this.addEntityFlag(45, EntityFlag.LINGERING);
     }
 
     @Override
@@ -223,9 +231,6 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addEntityEvent(67, EntityEventType.ENTITY_SPAWN);
         this.addEntityEvent(68, EntityEventType.DRAGON_FLAMING);
         this.addEntityEvent(69, EntityEventType.UPDATE_ITEM_STACK_SIZE);
-        this.addEntityEvent(70, EntityEventType.START_SWIMMING);
-        this.addEntityEvent(71, EntityEventType.BALLOON_POP);
-        this.addEntityEvent(72, EntityEventType.TREASURE_HUNT);
     }
 
     @Override
@@ -240,256 +245,111 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addSoundEvent(0, SoundEvent.ITEM_USE_ON);
         this.addSoundEvent(1, SoundEvent.HIT);
         this.addSoundEvent(2, SoundEvent.STEP);
-        this.addSoundEvent(3, SoundEvent.FLY);
-        this.addSoundEvent(4, SoundEvent.JUMP);
-        this.addSoundEvent(5, SoundEvent.BREAK);
-        this.addSoundEvent(6, SoundEvent.PLACE);
-        this.addSoundEvent(7, SoundEvent.HEAVY_STEP);
-        this.addSoundEvent(8, SoundEvent.GALLOP);
-        this.addSoundEvent(9, SoundEvent.FALL);
-        this.addSoundEvent(10, SoundEvent.AMBIENT);
-        this.addSoundEvent(11, SoundEvent.AMBIENT_BABY);
-        this.addSoundEvent(12, SoundEvent.AMBIENT_IN_WATER);
-        this.addSoundEvent(13, SoundEvent.BREATHE);
-        this.addSoundEvent(14, SoundEvent.DEATH);
-        this.addSoundEvent(15, SoundEvent.DEATH_IN_WATER);
-        this.addSoundEvent(16, SoundEvent.DEATH_TO_ZOMBIE);
-        this.addSoundEvent(17, SoundEvent.HURT);
-        this.addSoundEvent(18, SoundEvent.HURT_IN_WATER);
-        this.addSoundEvent(19, SoundEvent.MAD);
-        this.addSoundEvent(20, SoundEvent.BOOST);
-        this.addSoundEvent(21, SoundEvent.BOW);
-        this.addSoundEvent(22, SoundEvent.SQUISH_BIG);
-        this.addSoundEvent(23, SoundEvent.SQUISH_SMALL);
-        this.addSoundEvent(24, SoundEvent.FALL_BIG);
-        this.addSoundEvent(25, SoundEvent.FALL_SMALL);
-        this.addSoundEvent(26, SoundEvent.SPLASH);
-        this.addSoundEvent(27, SoundEvent.FIZZ);
-        this.addSoundEvent(28, SoundEvent.FLAP);
-        this.addSoundEvent(29, SoundEvent.SWIM);
-        this.addSoundEvent(30, SoundEvent.DRINK);
-        this.addSoundEvent(31, SoundEvent.EAT);
-        this.addSoundEvent(32, SoundEvent.TAKEOFF);
-        this.addSoundEvent(33, SoundEvent.SHAKE);
-        this.addSoundEvent(34, SoundEvent.PLOP);
-        this.addSoundEvent(35, SoundEvent.LAND);
-        this.addSoundEvent(36, SoundEvent.SADDLE);
-        this.addSoundEvent(37, SoundEvent.ARMOR);
-        this.addSoundEvent(38, SoundEvent.MOB_ARMOR_STAND_PLACE);
-        this.addSoundEvent(39, SoundEvent.ADD_CHEST);
-        this.addSoundEvent(40, SoundEvent.THROW);
-        this.addSoundEvent(41, SoundEvent.ATTACK);
-        this.addSoundEvent(42, SoundEvent.ATTACK_NODAMAGE);
-        this.addSoundEvent(43, SoundEvent.ATTACK_STRONG);
-        this.addSoundEvent(44, SoundEvent.WARN);
-        this.addSoundEvent(45, SoundEvent.SHEAR);
-        this.addSoundEvent(46, SoundEvent.MILK);
-        this.addSoundEvent(47, SoundEvent.THUNDER);
-        this.addSoundEvent(48, SoundEvent.EXPLODE);
-        this.addSoundEvent(49, SoundEvent.FIRE);
-        this.addSoundEvent(50, SoundEvent.IGNITE);
-        this.addSoundEvent(51, SoundEvent.FUSE);
-        this.addSoundEvent(52, SoundEvent.STARE);
-        this.addSoundEvent(53, SoundEvent.SPAWN);
-        this.addSoundEvent(54, SoundEvent.SHOOT);
-        this.addSoundEvent(55, SoundEvent.BREAK_BLOCK);
-        this.addSoundEvent(56, SoundEvent.LAUNCH);
-        this.addSoundEvent(57, SoundEvent.BLAST);
-        this.addSoundEvent(58, SoundEvent.LARGE_BLAST);
-        this.addSoundEvent(59, SoundEvent.TWINKLE);
-        this.addSoundEvent(60, SoundEvent.REMEDY);
-        this.addSoundEvent(61, SoundEvent.UNFECT);
-        this.addSoundEvent(62, SoundEvent.LEVELUP);
-        this.addSoundEvent(63, SoundEvent.BOW_HIT);
-        this.addSoundEvent(64, SoundEvent.BULLET_HIT);
-        this.addSoundEvent(65, SoundEvent.EXTINGUISH_FIRE);
-        this.addSoundEvent(66, SoundEvent.ITEM_FIZZ);
-        this.addSoundEvent(67, SoundEvent.CHEST_OPEN);
-        this.addSoundEvent(68, SoundEvent.CHEST_CLOSED);
-        this.addSoundEvent(69, SoundEvent.SHULKERBOX_OPEN);
-        this.addSoundEvent(70, SoundEvent.SHULKERBOX_CLOSED);
-        this.addSoundEvent(71, SoundEvent.ENDERCHEST_OPEN);
-        this.addSoundEvent(72, SoundEvent.ENDERCHEST_CLOSED);
-        this.addSoundEvent(73, SoundEvent.POWER_ON);
-        this.addSoundEvent(74, SoundEvent.POWER_OFF);
-        this.addSoundEvent(75, SoundEvent.ATTACH);
-        this.addSoundEvent(76, SoundEvent.DETACH);
-        this.addSoundEvent(77, SoundEvent.DENY);
-        this.addSoundEvent(78, SoundEvent.TRIPOD);
-        this.addSoundEvent(79, SoundEvent.POP);
-        this.addSoundEvent(80, SoundEvent.DROP_SLOT);
-        this.addSoundEvent(81, SoundEvent.NOTE);
-        this.addSoundEvent(82, SoundEvent.THORNS);
-        this.addSoundEvent(83, SoundEvent.PISTON_IN);
-        this.addSoundEvent(84, SoundEvent.PISTON_OUT);
-        this.addSoundEvent(85, SoundEvent.PORTAL);
-        this.addSoundEvent(86, SoundEvent.WATER);
-        this.addSoundEvent(87, SoundEvent.LAVA_POP);
-        this.addSoundEvent(88, SoundEvent.LAVA);
-        this.addSoundEvent(89, SoundEvent.BURP);
-        this.addSoundEvent(90, SoundEvent.BUCKET_FILL_WATER);
-        this.addSoundEvent(91, SoundEvent.BUCKET_FILL_LAVA);
-        this.addSoundEvent(92, SoundEvent.BUCKET_EMPTY_WATER);
-        this.addSoundEvent(93, SoundEvent.BUCKET_EMPTY_LAVA);
-        this.addSoundEvent(94, SoundEvent.ARMOR_EQUIP_CHAIN);
-        this.addSoundEvent(95, SoundEvent.ARMOR_EQUIP_DIAMOND);
-        this.addSoundEvent(96, SoundEvent.ARMOR_EQUIP_GENERIC);
-        this.addSoundEvent(97, SoundEvent.ARMOR_EQUIP_GOLD);
-        this.addSoundEvent(98, SoundEvent.ARMOR_EQUIP_IRON);
-        this.addSoundEvent(99, SoundEvent.ARMOR_EQUIP_LEATHER);
-        this.addSoundEvent(100, SoundEvent.ARMOR_EQUIP_ELYTRA);
-        this.addSoundEvent(101, SoundEvent.RECORD_13);
-        this.addSoundEvent(102, SoundEvent.RECORD_CAT);
-        this.addSoundEvent(103, SoundEvent.RECORD_BLOCKS);
-        this.addSoundEvent(104, SoundEvent.RECORD_CHIRP);
-        this.addSoundEvent(105, SoundEvent.RECORD_FAR);
-        this.addSoundEvent(106, SoundEvent.RECORD_MALL);
-        this.addSoundEvent(107, SoundEvent.RECORD_MELLOHI);
-        this.addSoundEvent(108, SoundEvent.RECORD_STAL);
-        this.addSoundEvent(109, SoundEvent.RECORD_STRAD);
-        this.addSoundEvent(110, SoundEvent.RECORD_WARD);
-        this.addSoundEvent(111, SoundEvent.RECORD_11);
-        this.addSoundEvent(112, SoundEvent.RECORD_WAIT);
-        this.addSoundEvent(113, SoundEvent.STOP_RECORD);
-        this.addSoundEvent(114, SoundEvent.FLOP);
-        this.addSoundEvent(115, SoundEvent.ELDERGUARDIAN_CURSE);
-        this.addSoundEvent(116, SoundEvent.MOB_WARNING);
-        this.addSoundEvent(117, SoundEvent.MOB_WARNING_BABY);
-        this.addSoundEvent(118, SoundEvent.TELEPORT);
-        this.addSoundEvent(119, SoundEvent.SHULKER_OPEN);
-        this.addSoundEvent(120, SoundEvent.SHULKER_CLOSE);
-        this.addSoundEvent(121, SoundEvent.HAGGLE);
-        this.addSoundEvent(122, SoundEvent.HAGGLE_YES);
-        this.addSoundEvent(123, SoundEvent.HAGGLE_NO);
-        this.addSoundEvent(124, SoundEvent.HAGGLE_IDLE);
-        this.addSoundEvent(125, SoundEvent.CHORUS_GROW);
-        this.addSoundEvent(126, SoundEvent.CHORUS_DEATH);
-        this.addSoundEvent(127, SoundEvent.GLASS);
-        this.addSoundEvent(128, SoundEvent.POTION_BREWED);
-        this.addSoundEvent(129, SoundEvent.CAST_SPELL);
-        this.addSoundEvent(130, SoundEvent.PREPARE_ATTACK);
-        this.addSoundEvent(131, SoundEvent.PREPARE_SUMMON);
-        this.addSoundEvent(132, SoundEvent.PREPARE_WOLOLO);
-        this.addSoundEvent(133, SoundEvent.FANG);
-        this.addSoundEvent(134, SoundEvent.CHARGE);
-        this.addSoundEvent(135, SoundEvent.CAMERA_TAKE_PICTURE);
-        this.addSoundEvent(136, SoundEvent.LEASHKNOT_PLACE);
-        this.addSoundEvent(137, SoundEvent.LEASHKNOT_BREAK);
-        this.addSoundEvent(138, SoundEvent.GROWL);
-        this.addSoundEvent(139, SoundEvent.WHINE);
-        this.addSoundEvent(140, SoundEvent.PANT);
-        this.addSoundEvent(141, SoundEvent.PURR);
-        this.addSoundEvent(142, SoundEvent.PURREOW);
-        this.addSoundEvent(143, SoundEvent.DEATH_MIN_VOLUME);
-        this.addSoundEvent(144, SoundEvent.DEATH_MID_VOLUME);
-        this.addSoundEvent(145, SoundEvent.IMITATE_BLAZE);
-        this.addSoundEvent(146, SoundEvent.IMITATE_CAVE_SPIDER);
-        this.addSoundEvent(147, SoundEvent.IMITATE_CREEPER);
-        this.addSoundEvent(148, SoundEvent.IMITATE_ELDER_GUARDIAN);
-        this.addSoundEvent(149, SoundEvent.IMITATE_ENDER_DRAGON);
-        this.addSoundEvent(150, SoundEvent.IMITATE_ENDERMAN);
-        this.addSoundEvent(152, SoundEvent.IMITATE_EVOCATION_ILLAGER);
-        this.addSoundEvent(153, SoundEvent.IMITATE_GHAST);
-        this.addSoundEvent(154, SoundEvent.IMITATE_HUSK);
-        this.addSoundEvent(155, SoundEvent.IMITATE_ILLUSION_ILLAGER);
-        this.addSoundEvent(156, SoundEvent.IMITATE_MAGMA_CUBE);
-        this.addSoundEvent(157, SoundEvent.IMITATE_POLAR_BEAR);
-        this.addSoundEvent(158, SoundEvent.IMITATE_SHULKER);
-        this.addSoundEvent(159, SoundEvent.IMITATE_SILVERFISH);
-        this.addSoundEvent(160, SoundEvent.IMITATE_SKELETON);
-        this.addSoundEvent(161, SoundEvent.IMITATE_SLIME);
-        this.addSoundEvent(162, SoundEvent.IMITATE_SPIDER);
-        this.addSoundEvent(163, SoundEvent.IMITATE_STRAY);
-        this.addSoundEvent(164, SoundEvent.IMITATE_VEX);
-        this.addSoundEvent(165, SoundEvent.IMITATE_VINDICATION_ILLAGER);
-        this.addSoundEvent(166, SoundEvent.IMITATE_WITCH);
-        this.addSoundEvent(167, SoundEvent.IMITATE_WITHER);
-        this.addSoundEvent(168, SoundEvent.IMITATE_WITHER_SKELETON);
-        this.addSoundEvent(169, SoundEvent.IMITATE_WOLF);
-        this.addSoundEvent(170, SoundEvent.IMITATE_ZOMBIE);
-        this.addSoundEvent(171, SoundEvent.IMITATE_ZOMBIE_PIGMAN);
-        this.addSoundEvent(172, SoundEvent.IMITATE_ZOMBIE_VILLAGER);
-        this.addSoundEvent(173, SoundEvent.BLOCK_END_PORTAL_FRAME_FILL);
-        this.addSoundEvent(174, SoundEvent.BLOCK_END_PORTAL_SPAWN);
-        this.addSoundEvent(175, SoundEvent.RANDOM_ANVIL_USE);
-        this.addSoundEvent(176, SoundEvent.BOTTLE_DRAGONBREATH);
-        this.addSoundEvent(177, SoundEvent.PORTAL_TRAVEL);
-        this.addSoundEvent(178, SoundEvent.ITEM_TRIDENT_HIT);
-        this.addSoundEvent(179, SoundEvent.ITEM_TRIDENT_RETURN);
-        this.addSoundEvent(180, SoundEvent.ITEM_TRIDENT_RIPTIDE_1);
-        this.addSoundEvent(181, SoundEvent.ITEM_TRIDENT_RIPTIDE_2);
-        this.addSoundEvent(182, SoundEvent.ITEM_TRIDENT_RIPTIDE_3);
-        this.addSoundEvent(183, SoundEvent.ITEM_TRIDENT_THROW);
-        this.addSoundEvent(184, SoundEvent.ITEM_TRIDENT_THUNDER);
-        this.addSoundEvent(185, SoundEvent.ITEM_TRIDENT_HIT_GROUND);
-        this.addSoundEvent(186, SoundEvent.DEFAULT);
-        this.addSoundEvent(188, SoundEvent.ELEMENT_CONSTRUCTOR_OPEN);
-        this.addSoundEvent(189, SoundEvent.ICE_BOMB_HIT);
-        this.addSoundEvent(190, SoundEvent.BALLOON_POP);
-        this.addSoundEvent(191, SoundEvent.LT_REACTION_ICE_BOMB);
-        this.addSoundEvent(192, SoundEvent.LT_REACTION_BLEACH);
-        this.addSoundEvent(193, SoundEvent.LT_REACTION_E_PASTE);
-        this.addSoundEvent(194, SoundEvent.LT_REACTION_E_PASTE2);
-        this.addSoundEvent(199, SoundEvent.LT_REACTION_FERTILIZER);
-        this.addSoundEvent(200, SoundEvent.LT_REACTION_FIREBALL);
-        this.addSoundEvent(201, SoundEvent.LT_REACTION_MG_SALT);
-        this.addSoundEvent(202, SoundEvent.LT_REACTION_MISC_FIRE);
-        this.addSoundEvent(203, SoundEvent.LT_REACTION_FIRE);
-        this.addSoundEvent(204, SoundEvent.LT_REACTION_MISC_EXPLOSION);
-        this.addSoundEvent(205, SoundEvent.LT_REACTION_MISC_MYSTICAL);
-        this.addSoundEvent(206, SoundEvent.LT_REACTION_MISC_MYSTICAL2);
-        this.addSoundEvent(207, SoundEvent.LT_REACTION_PRODUCT);
-        this.addSoundEvent(208, SoundEvent.SPARKLER_USE);
-        this.addSoundEvent(209, SoundEvent.GLOWSTICK_USE);
-        this.addSoundEvent(210, SoundEvent.SPARKLER_ACTIVE);
-        this.addSoundEvent(211, SoundEvent.CONVERT_TO_DROWNED);
-        this.addSoundEvent(212, SoundEvent.BUCKET_FILL_FISH);
-        this.addSoundEvent(213, SoundEvent.BUCKET_EMPTY_FISH);
-        this.addSoundEvent(214, SoundEvent.BUBBLE_UP);
-        this.addSoundEvent(215, SoundEvent.BUBBLE_DOWN);
-        this.addSoundEvent(216, SoundEvent.BUBBLE_POP);
-        this.addSoundEvent(217, SoundEvent.BUBBLE_UP_INSIDE);
-        this.addSoundEvent(218, SoundEvent.BUBBLE_DOWN_INSIDE);
-        this.addSoundEvent(219, SoundEvent.BABY_HURT);
-        this.addSoundEvent(220, SoundEvent.BABY_DEATH);
-        this.addSoundEvent(221, SoundEvent.BABY_STEP);
-        this.addSoundEvent(222, SoundEvent.BABY_SPAWN);
-        this.addSoundEvent(223, SoundEvent.BORN);
-        this.addSoundEvent(224, SoundEvent.BLOCK_TURTLE_EGG_BREAK);
-        this.addSoundEvent(225, SoundEvent.BLOCK_TURTLE_EGG_CRACK);
-        this.addSoundEvent(226, SoundEvent.BLOCK_TURTLE_EGG_HATCH);
-        this.addSoundEvent(227, SoundEvent.TURTLE_LAY_EGG);
-        this.addSoundEvent(228, SoundEvent.BLOCK_TURTLE_EGG_ATTACK);
-        this.addSoundEvent(229, SoundEvent.BEACON_ACTIVATE);
-        this.addSoundEvent(230, SoundEvent.BEACON_AMBIENT);
-        this.addSoundEvent(231, SoundEvent.BEACON_DEACTIVATE);
-        this.addSoundEvent(232, SoundEvent.BEACON_POWER);
-        this.addSoundEvent(233, SoundEvent.CONDUIT_ACTIVATE);
-        this.addSoundEvent(234, SoundEvent.CONDUIT_AMBIENT);
-        this.addSoundEvent(235, SoundEvent.CONDUIT_ATTACK);
-        this.addSoundEvent(236, SoundEvent.CONDUIT_DEACTIVATE);
-        this.addSoundEvent(237, SoundEvent.CONDUIT_SHORT);
-        this.addSoundEvent(238, SoundEvent.SWOOP);
-        this.addSoundEvent(239, SoundEvent.UNDEFINED);
-    }
-
-    @Override
-    protected void registerCommandParams() {
-        this.addCommandParam(1, CommandParam.INT);
-        this.addCommandParam(2, CommandParam.FLOAT);
-        this.addCommandParam(3, CommandParam.VALUE);
-        this.addCommandParam(4, CommandParam.WILDCARD_INT);
-        this.addCommandParam(5, CommandParam.OPERATOR);
-        this.addCommandParam(6, CommandParam.TARGET);
-        this.addCommandParam(7, CommandParam.WILDCARD_TARGET);
-        this.addCommandParam(14, CommandParam.FILE_PATH);
-        this.addCommandParam(18, CommandParam.INT_RANGE);
-        this.addCommandParam(26, CommandParam.STRING);
-        this.addCommandParam(28, CommandParam.POSITION);
-        this.addCommandParam(31, CommandParam.MESSAGE);
-        this.addCommandParam(33, CommandParam.TEXT);
-        this.addCommandParam(36, CommandParam.JSON);
-        this.addCommandParam(43, CommandParam.COMMAND);
+        this.addSoundEvent(3, SoundEvent.JUMP);
+        this.addSoundEvent(4, SoundEvent.BREAK);
+        this.addSoundEvent(5, SoundEvent.PLACE);
+        this.addSoundEvent(6, SoundEvent.HEAVY_STEP);
+        this.addSoundEvent(7, SoundEvent.GALLOP);
+        this.addSoundEvent(8, SoundEvent.FALL);
+        this.addSoundEvent(9, SoundEvent.AMBIENT);
+        this.addSoundEvent(10, SoundEvent.AMBIENT_BABY);
+        this.addSoundEvent(11, SoundEvent.AMBIENT_IN_WATER);
+        this.addSoundEvent(12, SoundEvent.BREATHE);
+        this.addSoundEvent(13, SoundEvent.DEATH);
+        this.addSoundEvent(14, SoundEvent.DEATH_IN_WATER);
+        this.addSoundEvent(15, SoundEvent.DEATH_TO_ZOMBIE);
+        this.addSoundEvent(16, SoundEvent.HURT);
+        this.addSoundEvent(17, SoundEvent.HURT_IN_WATER);
+        this.addSoundEvent(18, SoundEvent.MAD);
+        this.addSoundEvent(19, SoundEvent.BOOST);
+        this.addSoundEvent(20, SoundEvent.BOW);
+        this.addSoundEvent(21, SoundEvent.SQUISH_BIG);
+        this.addSoundEvent(22, SoundEvent.SQUISH_SMALL);
+        this.addSoundEvent(23, SoundEvent.FALL_BIG);
+        this.addSoundEvent(24, SoundEvent.FALL_SMALL);
+        this.addSoundEvent(25, SoundEvent.SPLASH);
+        this.addSoundEvent(26, SoundEvent.FIZZ);
+        this.addSoundEvent(27, SoundEvent.FLAP);
+        this.addSoundEvent(28, SoundEvent.SWIM);
+        this.addSoundEvent(29, SoundEvent.DRINK);
+        this.addSoundEvent(30, SoundEvent.EAT);
+        this.addSoundEvent(31, SoundEvent.TAKEOFF);
+        this.addSoundEvent(32, SoundEvent.SHAKE);
+        this.addSoundEvent(33, SoundEvent.PLOP);
+        this.addSoundEvent(34, SoundEvent.LAND);
+        this.addSoundEvent(35, SoundEvent.SADDLE);
+        this.addSoundEvent(36, SoundEvent.ARMOR);
+        this.addSoundEvent(37, SoundEvent.ADD_CHEST);
+        this.addSoundEvent(38, SoundEvent.THROW);
+        this.addSoundEvent(39, SoundEvent.ATTACK);
+        this.addSoundEvent(40, SoundEvent.ATTACK_NODAMAGE);
+        this.addSoundEvent(41, SoundEvent.WARN);
+        this.addSoundEvent(42, SoundEvent.SHEAR);
+        this.addSoundEvent(43, SoundEvent.MILK);
+        this.addSoundEvent(44, SoundEvent.THUNDER);
+        this.addSoundEvent(45, SoundEvent.EXPLODE);
+        this.addSoundEvent(46, SoundEvent.FIRE);
+        this.addSoundEvent(47, SoundEvent.IGNITE);
+        this.addSoundEvent(48, SoundEvent.FUSE);
+        this.addSoundEvent(49, SoundEvent.STARE);
+        this.addSoundEvent(50, SoundEvent.SPAWN);
+        this.addSoundEvent(51, SoundEvent.SHOOT);
+        this.addSoundEvent(52, SoundEvent.BREAK_BLOCK);
+        this.addSoundEvent(53, SoundEvent.REMEDY);
+        this.addSoundEvent(54, SoundEvent.UNFECT);
+        this.addSoundEvent(55, SoundEvent.LEVELUP);
+        this.addSoundEvent(56, SoundEvent.BOW_HIT);
+        this.addSoundEvent(57, SoundEvent.BULLET_HIT);
+        this.addSoundEvent(58, SoundEvent.EXTINGUISH_FIRE);
+        this.addSoundEvent(59, SoundEvent.ITEM_FIZZ);
+        this.addSoundEvent(60, SoundEvent.CHEST_OPEN);
+        this.addSoundEvent(61, SoundEvent.CHEST_CLOSED);
+        this.addSoundEvent(62, SoundEvent.SHULKERBOX_OPEN);
+        this.addSoundEvent(63, SoundEvent.SHULKERBOX_CLOSED);
+        this.addSoundEvent(64, SoundEvent.POWER_ON);
+        this.addSoundEvent(65, SoundEvent.POWER_OFF);
+        this.addSoundEvent(66, SoundEvent.ATTACH);
+        this.addSoundEvent(67, SoundEvent.DETACH);
+        this.addSoundEvent(68, SoundEvent.DENY);
+        this.addSoundEvent(69, SoundEvent.TRIPOD);
+        this.addSoundEvent(70, SoundEvent.POP);
+        this.addSoundEvent(71, SoundEvent.DROP_SLOT);
+        this.addSoundEvent(72, SoundEvent.NOTE);
+        this.addSoundEvent(73, SoundEvent.THORNS);
+        this.addSoundEvent(74, SoundEvent.PISTON_IN);
+        this.addSoundEvent(75, SoundEvent.PISTON_OUT);
+        this.addSoundEvent(76, SoundEvent.PORTAL);
+        this.addSoundEvent(77, SoundEvent.WATER);
+        this.addSoundEvent(78, SoundEvent.LAVA_POP);
+        this.addSoundEvent(79, SoundEvent.LAVA);
+        this.addSoundEvent(80, SoundEvent.BURP);
+        this.addSoundEvent(81, SoundEvent.BUCKET_FILL_WATER);
+        this.addSoundEvent(82, SoundEvent.BUCKET_FILL_LAVA);
+        this.addSoundEvent(83, SoundEvent.BUCKET_EMPTY_WATER);
+        this.addSoundEvent(84, SoundEvent.BUCKET_EMPTY_LAVA);
+        this.addSoundEvent(85, SoundEvent.FLOP);
+        this.addSoundEvent(86, SoundEvent.ELDERGUARDIAN_CURSE);
+        this.addSoundEvent(87, SoundEvent.MOB_WARNING);
+        this.addSoundEvent(88, SoundEvent.MOB_WARNING_BABY);
+        this.addSoundEvent(89, SoundEvent.TELEPORT);
+        this.addSoundEvent(90, SoundEvent.SHULKER_OPEN);
+        this.addSoundEvent(91, SoundEvent.SHULKER_CLOSE);
+        this.addSoundEvent(92, SoundEvent.HAGGLE);
+        this.addSoundEvent(93, SoundEvent.HAGGLE_YES);
+        this.addSoundEvent(94, SoundEvent.HAGGLE_NO);
+        this.addSoundEvent(95, SoundEvent.HAGGLE_IDLE);
+        this.addSoundEvent(96, SoundEvent.CHORUS_GROW);
+        this.addSoundEvent(97, SoundEvent.CHORUS_DEATH);
+        this.addSoundEvent(98, SoundEvent.GLASS);
+        this.addSoundEvent(99, SoundEvent.CAST_SPELL);
+        this.addSoundEvent(100, SoundEvent.PREPARE_ATTACK);
+        this.addSoundEvent(101, SoundEvent.PREPARE_SUMMON);
+        this.addSoundEvent(102, SoundEvent.PREPARE_WOLOLO);
+        this.addSoundEvent(103, SoundEvent.FANG);
+        this.addSoundEvent(104, SoundEvent.CHARGE);
+        this.addSoundEvent(105, SoundEvent.CAMERA_TAKE_PICTURE);
+        this.addSoundEvent(106, SoundEvent.DEFAULT);
+        this.addSoundEvent(107, SoundEvent.UNDEFINED);
     }
 
     @Override
@@ -503,7 +363,7 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
 
         // Sounds
         int sound = 1000;
-        this.addLevelEvent(0 + sound, LevelEventType.SOUND_CLICK);
+        this.addLevelEvent(sound, LevelEventType.SOUND_CLICK);
         this.addLevelEvent(1 + sound, LevelEventType.SOUND_CLICK_FAIL);
         this.addLevelEvent(2 + sound, LevelEventType.SOUND_LAUNCH);
         this.addLevelEvent(3 + sound, LevelEventType.SOUND_DOOR_OPEN);
@@ -545,7 +405,7 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
 
         // Particles
         int particle = 2000;
-        this.addLevelEvent(0 + particle, LevelEventType.PARTICLE_SHOOT);
+        this.addLevelEvent(particle, LevelEventType.PARTICLE_SHOOT);
         this.addLevelEvent(1 + particle, LevelEventType.PARTICLE_DESTROY_BLOCK);
         this.addLevelEvent(2 + particle, LevelEventType.PARTICLE_POTION_SPLASH);
         this.addLevelEvent(3 + particle, LevelEventType.PARTICLE_EYE_OF_ENDER_DEATH);
@@ -575,12 +435,10 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addLevelEvent(3 + world, LevelEventType.STOP_RAINING);
         this.addLevelEvent(4 + world, LevelEventType.STOP_THUNDERSTORM);
         this.addLevelEvent(5 + world, LevelEventType.GLOBAL_PAUSE);
-        this.addLevelEvent(6 + world, LevelEventType.SIM_TIME_STEP);
-        this.addLevelEvent(7 + world, LevelEventType.SIM_TIME_SCALE);
 
         // Blocks
         int block = 3500;
-        this.addLevelEvent(0 + block, LevelEventType.ACTIVATE_BLOCK);
+        this.addLevelEvent(block, LevelEventType.ACTIVATE_BLOCK);
         this.addLevelEvent(1 + block, LevelEventType.CAULDRON_EXPLODE);
         this.addLevelEvent(2 + block, LevelEventType.CAULDRON_DYE_ARMOR);
         this.addLevelEvent(3 + block, LevelEventType.CAULDRON_CLEAN_ARMOR);
@@ -591,6 +449,15 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addLevelEvent(8 + block, LevelEventType.CAULDRON_ADD_DYE);
         this.addLevelEvent(9 + block, LevelEventType.CAULDRON_CLEAN_BANNER);
         this.addLevelEvent(10 + block, LevelEventType.CAULDRON_FLUSH);
+
+        int breaking = 3600;
+        this.addLevelEvent(breaking, LevelEventType.BLOCK_START_BREAK);
+        this.addLevelEvent(1 + breaking, LevelEventType.BLOCK_STOP_BREAK);
+
+        int setData = 4000;
+        this.addLevelEvent(setData, LevelEventType.SET_DATA);
+
+        this.addLevelEvent(9800, LevelEventType.SLEEPING_PLAYERS);
 
         // Legacy particles
         int legacy = 0x4000;
@@ -768,26 +635,19 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
     @Override
     public CommandOriginData readCommandOrigin(ByteBuf buffer) {
         Preconditions.checkNotNull(buffer, "buffer");
-        CommandOriginType origin = CommandOriginType.values()[VarInts.readUnsignedInt(buffer)];
-        UUID uuid = readUuid(buffer);
-        String requestId = readString(buffer);
-        long varLong = -1;
-        if (origin == CommandOriginType.DEV_CONSOLE || origin == CommandOriginType.TEST) {
-            varLong = VarInts.readLong(buffer);
-        }
-        return new CommandOriginData(origin, uuid, requestId, varLong);
+        int unknown1 = VarInts.readUnsignedInt(buffer);
+        int unknown2 = VarInts.readUnsignedInt(buffer);
+        long playerUniqueId = VarInts.readLong(buffer);
+        return new CommandOriginData(unknown1, unknown2, playerUniqueId);
     }
 
     @Override
     public void writeCommandOrigin(ByteBuf buffer, CommandOriginData originData) {
         Preconditions.checkNotNull(buffer, "buffer");
         Preconditions.checkNotNull(originData, "commandOriginData");
-        VarInts.writeUnsignedInt(buffer, originData.getOrigin().ordinal());
-        writeUuid(buffer, originData.getUuid());
-        writeString(buffer, originData.getRequestId());
-        if (originData.getOrigin() == CommandOriginType.DEV_CONSOLE || originData.getOrigin() == CommandOriginType.TEST) {
-            VarInts.writeLong(buffer, originData.getEvent());
-        }
+        VarInts.writeUnsignedInt(buffer, originData.getUnknownVarUInt1());
+        VarInts.writeUnsignedInt(buffer, originData.getUnknownVarUInt2());
+        VarInts.writeLong(buffer, originData.getPlayerUniqueId());
     }
 
     @Override
@@ -959,43 +819,6 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
                     break;
             }
         }
-    }
-
-    @Override
-    public CommandEnumData readCommandEnum(ByteBuf buffer, boolean soft) {
-        Preconditions.checkNotNull(buffer, "buffer");
-
-        String name = readString(buffer);
-
-        String[] values = new String[VarInts.readUnsignedInt(buffer)];
-        for (int i = 0; i < values.length; i++) {
-            values[i] = readString(buffer);
-        }
-        return new CommandEnumData(name, values, soft);
-    }
-
-    @Override
-    public void writeCommandEnum(ByteBuf buffer, CommandEnumData enumData) {
-        Preconditions.checkNotNull(buffer, "buffer");
-        Preconditions.checkNotNull(enumData, "enumData");
-
-        writeString(buffer, enumData.getName());
-
-        String[] values = enumData.getValues();
-        VarInts.writeUnsignedInt(buffer, values.length);
-        for (String value : values) {
-            writeString(buffer, value);
-        }
-    }
-
-    @Override
-    public StructureSettings readStructureSettings(ByteBuf buffer) {
-        return null;
-    }
-
-    @Override
-    public void writeStructureSettings(ByteBuf buffer, StructureSettings settings) {
-
     }
 
     @Override

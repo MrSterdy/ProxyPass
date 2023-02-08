@@ -22,8 +22,15 @@ public class BossEventSerializer_v113 implements BedrockPacketSerializer<BossEve
     @Override
     public void deserialize(ByteBuf buffer, BedrockPacketHelper helper, BossEventPacket packet) {
         packet.setBossUniqueEntityId(VarInts.readLong(buffer));
-        packet.setAction(BossEventPacket.Action.values()[VarInts.readUnsignedInt(buffer)]);
-        this.deserializeAction(buffer, helper, packet);
+
+        BossEventPacket.Action[] actions = BossEventPacket.Action.values();
+        int action = VarInts.readUnsignedInt(buffer);
+
+        if (action >= 0 && action < actions.length) {
+            packet.setAction(actions[action]);
+
+            this.deserializeAction(buffer, helper, packet);
+        }
     }
 
     protected void serializeAction(ByteBuf buffer, BedrockPacketHelper helper, BossEventPacket packet) {
@@ -32,7 +39,7 @@ public class BossEventSerializer_v113 implements BedrockPacketSerializer<BossEve
             case UNREGISTER_PLAYER:
                 VarInts.writeLong(buffer, packet.getPlayerUniqueEntityId());
                 break;
-            case CREATE:
+            case SHOW:
                 helper.writeString(buffer, packet.getTitle());
                 buffer.writeFloatLE(packet.getHealthPercentage());
                 // fall through
@@ -62,7 +69,7 @@ public class BossEventSerializer_v113 implements BedrockPacketSerializer<BossEve
             case UNREGISTER_PLAYER:
                 packet.setPlayerUniqueEntityId(VarInts.readLong(buffer));
                 break;
-            case CREATE:
+            case SHOW:
                 packet.setTitle(helper.readString(buffer));
                 packet.setHealthPercentage(buffer.readFloatLE());
                 // fall through

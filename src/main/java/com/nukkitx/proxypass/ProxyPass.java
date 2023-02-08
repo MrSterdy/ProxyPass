@@ -42,8 +42,6 @@ public class ProxyPass {
     private static final DefaultPrettyPrinter PRETTY_PRINTER = new DefaultPrettyPrinter();
     public static Map<Integer, String> legacyIdMap = new HashMap<>();
 
-    public static final int SHIELD_RUNTIME_ID = 355; // Change this when the item palette changes.
-
     static {
         DefaultIndenter indenter = new DefaultIndenter("    ", "\n");
         PRETTY_PRINTER.indentArraysWith(indenter);
@@ -212,6 +210,6 @@ public class ProxyPass {
     }
     
     public boolean isFull() {
-        return maxClients > 0 ? this.clients.size() >= maxClients : false;
+        return maxClients > 0 && this.clients.size() >= maxClients;
     }
 }

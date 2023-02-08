@@ -10,7 +10,7 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 import java.util.Collection;
 
 public abstract class BedrockWrapperSerializer {
-    protected static final InternalLogger log = InternalLoggerFactory.getInstance(BedrockWrapperSerializerV9_10.class);
+    protected static final InternalLogger log = InternalLoggerFactory.getInstance(BedrockWrapperSerializerV8.class);
 
     /**
      * Compress packets to a buffer for sending

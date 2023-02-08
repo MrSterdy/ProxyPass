@@ -21,8 +21,6 @@ public class RecipeUtils {
 
     public static void writeRecipes(CraftingDataPacket packet, ProxyPass proxy) {
         List<CraftingDataEntry> entries = new ArrayList<>();
-        List<PotionMixDataEntry> potions = new ArrayList<>();
-        List<ContainerMixDataEntry> containers = new ArrayList<>();
 
         for (CraftingData craftingData : packet.getCraftingData()) {
             CraftingDataEntry entry = new CraftingDataEntry();
@@ -30,17 +28,12 @@ public class RecipeUtils {
             CraftingDataType type = craftingData.getType();
             entry.type = type.ordinal();
 
-            if (type != CraftingDataType.MULTI) {
-                entry.block = craftingData.getCraftingTag();
-            } else {
-                entry.uuid = craftingData.getUuid();
-            }
+            entry.uuid = craftingData.getUuid();
 
             if (type == CraftingDataType.SHAPED || type == CraftingDataType.SHAPELESS || type == CraftingDataType.SHULKER_BOX) {
-                entry.id = craftingData.getRecipeId();
-                entry.priority = craftingData.getPriority();
                 entry.output = writeItemArray(craftingData.getOutputs().toArray(new ItemData[0]));
             }
+
             if (type == CraftingDataType.SHAPED) {
 
                 int charCounter = 0;
@@ -96,7 +89,7 @@ public class RecipeUtils {
             entries.add(entry);
         }
 
-        Recipes recipes = new Recipes(ProxyPass.CODEC.getProtocolVersion(), entries, potions, containers);
+        Recipes recipes = new Recipes(ProxyPass.CODEC.getProtocolVersion(), entries);
 
         proxy.saveJson("recipes.json", recipes);
     }
@@ -140,7 +133,7 @@ public class RecipeUtils {
     private static Item itemFromNetwork(ItemData data) {
         int id = data.getId();
         String identifier = ProxyPass.legacyIdMap.get(id);
-        Integer damage = (int) data.getDamage();
+        Integer damage = data.getDamage();
         Integer count = data.getCount();
         String tag = nbtToBase64(data.getTag());
 
@@ -162,15 +155,8 @@ public class RecipeUtils {
         if (itemDescriptor instanceof DefaultDescriptor) {
             descriptor.setItemId(((DefaultDescriptor) itemDescriptor).getItemId());
             descriptor.setAuxValue(((DefaultDescriptor) itemDescriptor).getAuxValue());
-        } else if (itemDescriptor instanceof MolangDescriptor) {
-            descriptor.setTagExpression(((MolangDescriptor) itemDescriptor).getTagExpression());
-            descriptor.setMolangVersion(((MolangDescriptor) itemDescriptor).getMolangVersion());
-        } else if (itemDescriptor instanceof ItemTagDescriptor) {
-            descriptor.setItemTag(((ItemTagDescriptor) itemDescriptor).getItemTag());
-        } else if (itemDescriptor instanceof DeferredDescriptor) {
-            descriptor.setFullName(((DeferredDescriptor) itemDescriptor).getFullName());
-            descriptor.setAuxValue(((DeferredDescriptor) itemDescriptor).getAuxValue());
         }
+
         return descriptor;
     }
 
@@ -179,35 +165,11 @@ public class RecipeUtils {
     @Getter
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private static class CraftingDataEntry {
-        private String id;
         private int type;
         private Object input;
         private Object output;
         private String[] shape;
-        private String block;
         private UUID uuid;
-        private Integer priority;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private static class PotionMixDataEntry {
-        private String inputId;
-        private int inputMeta;
-        private String reagentId;
-        private int reagentMeta;
-        private String outputId;
-        private int outputMeta;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private static class ContainerMixDataEntry {
-        private String inputId;
-        private String reagentId;
-        private String outputId;
     }
 
     @Value
@@ -225,9 +187,8 @@ public class RecipeUtils {
     @Value
     private static class Recipes {
         int version;
+
         List<CraftingDataEntry> recipes;
-        List<PotionMixDataEntry> potionMixes;
-        List<ContainerMixDataEntry> containerMixes;
     }
 
     @Data
@@ -238,12 +199,5 @@ public class RecipeUtils {
         // Default descriptor
         Integer itemId;
         Integer auxValue;
-        // Deferred descriptor
-        String fullName;
-        // Item tag descriptor
-        String itemTag;
-        // Molang descriptor
-        String tagExpression;
-        Integer molangVersion;
     }
 }

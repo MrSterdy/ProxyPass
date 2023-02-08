@@ -11,7 +11,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(doNotUseGetters = true, callSuper = false)
 public class EventPacket extends BedrockPacket {
     private long uniqueEntityId;
+
     private byte usePlayerId;
+
     private EventData eventData;
 
     @Override

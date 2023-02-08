@@ -20,9 +20,10 @@ public class CommandStepSerializer_v113 implements BedrockPacketSerializer<Comma
         VarInts.writeUnsignedInt(buffer, packet.getUnknownVarUInt());
         VarInts.writeUnsignedInt(buffer, packet.getCurrentStep());
         buffer.writeBoolean(packet.isDone());
-        VarInts.writeUnsignedLong(buffer, packet.getCId());
-        helper.writeString(buffer, packet.getInput());
-        helper.writeString(buffer, packet.getOutput());
+        VarInts.writeUnsignedLong(buffer, packet.getClientId());
+        helper.writeString(buffer, packet.getInputJson());
+        helper.writeString(buffer, packet.getOutputJson());
+        helper.writeCommandOrigin(buffer, packet.getOriginData());
     }
 
     @Override
@@ -32,8 +33,9 @@ public class CommandStepSerializer_v113 implements BedrockPacketSerializer<Comma
         packet.setUnknownVarUInt(VarInts.readUnsignedInt(buffer));
         packet.setCurrentStep(VarInts.readUnsignedInt(buffer));
         packet.setDone(buffer.readBoolean());
-        packet.setCId(VarInts.readUnsignedLong(buffer));
-        packet.setInput(helper.readString(buffer));
-        packet.setOutput(helper.readString(buffer));
+        packet.setClientId(VarInts.readUnsignedLong(buffer));
+        packet.setInputJson(helper.readString(buffer));
+        packet.setOutputJson(helper.readString(buffer));
+        packet.setOriginData(helper.readCommandOrigin(buffer));
     }
 }

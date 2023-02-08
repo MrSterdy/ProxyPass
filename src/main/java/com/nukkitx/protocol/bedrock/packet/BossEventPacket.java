@@ -33,9 +33,9 @@ public class BossEventPacket extends BedrockPacket {
 
     public enum Action {
         /**
-         * Creates the bossbar to the player.
+         * Shows the bossbar to the player.
          */
-        CREATE,
+        SHOW,
         /**
          * Registers a player to a boss fight.
          */

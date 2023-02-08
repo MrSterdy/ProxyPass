@@ -7,8 +7,6 @@ import lombok.Data;
 @Data
 public abstract class BedrockPacket implements MinecraftPacket {
     private int packetId;
-    private int senderId;
-    private int clientId;
 
     public abstract boolean handle(BedrockPacketHandler handler);
 

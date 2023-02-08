@@ -148,11 +148,8 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
             downstream.setLogging(true);
             downstream.setPacketHandler(new DownstreamInitialPacketHandler(downstream, proxySession, this.proxy));
             downstream.addDisconnectHandler(disconnectReason -> this.session.disconnect());
-            downstream.getHardcodedBlockingId().set(ProxyPass.SHIELD_RUNTIME_ID);
-            this.session.getHardcodedBlockingId().set(ProxyPass.SHIELD_RUNTIME_ID);
 
             //SkinUtils.saveSkin(proxySession, this.skinData);
         });
     }
-
 }

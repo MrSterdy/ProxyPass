@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.ByteBufUtil;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class LittleEndianByteBufOutputStream extends ByteBufOutputStream {
@@ -16,37 +15,37 @@ public class LittleEndianByteBufOutputStream extends ByteBufOutputStream {
     }
 
     @Override
-    public void writeChar(int v) throws IOException {
+    public void writeChar(int v) {
         this.buffer.writeChar(Character.reverseBytes((char) v));
     }
 
     @Override
-    public void writeDouble(double v) throws IOException {
+    public void writeDouble(double v) {
         this.buffer.writeDoubleLE(v);
     }
 
     @Override
-    public void writeFloat(float v) throws IOException {
+    public void writeFloat(float v) {
         this.buffer.writeFloatLE(v);
     }
 
     @Override
-    public void writeShort(int val) throws IOException {
+    public void writeShort(int val) {
         this.buffer.writeShortLE(val);
     }
 
     @Override
-    public void writeLong(long val) throws IOException {
+    public void writeLong(long val) {
         this.buffer.writeLongLE(val);
     }
 
     @Override
-    public void writeInt(int val) throws IOException {
+    public void writeInt(int val) {
         this.buffer.writeIntLE(val);
     }
 
     @Override
-    public void writeUTF(String string) throws IOException {
+    public void writeUTF(String string) {
         this.writeShort(ByteBufUtil.utf8Bytes(string));
         this.buffer.writeCharSequence(string, StandardCharsets.UTF_8);
     }
