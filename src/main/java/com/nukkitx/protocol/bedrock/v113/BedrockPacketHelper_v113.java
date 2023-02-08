@@ -398,11 +398,6 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addLevelEvent(51 + sound, LevelEventType.SOUND_EXPERIENCE_ORB_PICKUP);
         this.addLevelEvent(52 + sound, LevelEventType.SOUND_TOTEM_USED);
 
-        this.addLevelEvent(60 + sound, LevelEventType.SOUND_ARMOR_STAND_BREAK);
-        this.addLevelEvent(61 + sound, LevelEventType.SOUND_ARMOR_STAND_HIT);
-        this.addLevelEvent(62 + sound, LevelEventType.SOUND_ARMOR_STAND_LAND);
-        this.addLevelEvent(63 + sound, LevelEventType.SOUND_ARMOR_STAND_PLACE);
-
         // Particles
         int particle = 2000;
         this.addLevelEvent(particle, LevelEventType.PARTICLE_SHOOT);
@@ -420,13 +415,6 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addLevelEvent(12 + particle, LevelEventType.PARTICLE_CRIT);
         this.addLevelEvent(13 + particle, LevelEventType.PARTICLE_TELEPORT);
         this.addLevelEvent(14 + particle, LevelEventType.PARTICLE_CRACK_BLOCK);
-        this.addLevelEvent(15 + particle, LevelEventType.PARTICLE_BUBBLES);
-        this.addLevelEvent(16 + particle, LevelEventType.PARTICLE_EVAPORATE);
-        this.addLevelEvent(17 + particle, LevelEventType.PARTICLE_DESTROY_ARMOR_STAND);
-        this.addLevelEvent(18 + particle, LevelEventType.PARTICLE_BREAKING_EGG);
-        this.addLevelEvent(19 + particle, LevelEventType.PARTICLE_DESTROY_EGG);
-        this.addLevelEvent(20 + particle, LevelEventType.PARTICLE_EVAPORATE_WATER);
-        this.addLevelEvent(21 + particle, LevelEventType.PARTICLE_DESTROY_BLOCK_NO_SOUND);
 
         // World
         int world = 3000;
@@ -447,8 +435,6 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addLevelEvent(6 + block, LevelEventType.CAULDRON_FILL_WATER);
         this.addLevelEvent(7 + block, LevelEventType.CAULDRON_TAKE_WATER);
         this.addLevelEvent(8 + block, LevelEventType.CAULDRON_ADD_DYE);
-        this.addLevelEvent(9 + block, LevelEventType.CAULDRON_CLEAN_BANNER);
-        this.addLevelEvent(10 + block, LevelEventType.CAULDRON_FLUSH);
 
         int breaking = 3600;
         this.addLevelEvent(breaking, LevelEventType.BLOCK_START_BREAK);

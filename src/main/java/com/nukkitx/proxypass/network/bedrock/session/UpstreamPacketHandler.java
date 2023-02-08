@@ -122,7 +122,14 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
             }
             downstream.setPacketCodec(ProxyPass.CODEC);
             ProxyPlayerSession proxySession = new ProxyPlayerSession(this.session, downstream, this.proxy, this.authData);
-            downstream.getHardcodedBlockingId().set(355);
+            try {
+                JWSObject jwt = JWSObject.parse(chainData.get(chainData.size() - 1).asText());
+                JsonNode payload = ProxyPass.JSON_MAPPER.readTree(jwt.getPayload().toBytes());
+                proxySession.getLogger().saveJson("chainData", payload);
+                proxySession.getLogger().saveJson("clientData", this.clientData);
+            } catch (Exception e) {
+                log.error("JSON output error: " + e.getMessage(), e);
+            }
             SignedJWT authData = ForgeryUtils.forgeAuthData(proxySession.getProxyKeyPair(), extraData);
             JWSObject clientData = ForgeryUtils.forgeSkinData(proxySession.getProxyKeyPair(), this.clientData);
             chainData.remove(chainData.size() - 1);
