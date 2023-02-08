@@ -9,12 +9,10 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import static com.nukkitx.protocol.bedrock.packet.MovePlayerPacket.Animation;
-import static com.nukkitx.protocol.bedrock.packet.MovePlayerPacket.TeleportationCause;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MovePlayerSerializer_v113 implements BedrockPacketSerializer<MovePlayerPacket> {
     public static final MovePlayerSerializer_v113 INSTANCE = new MovePlayerSerializer_v113();
-
 
     @Override
     public void serialize(ByteBuf buffer, BedrockPacketHelper helper, MovePlayerPacket packet) {
@@ -25,8 +23,8 @@ public class MovePlayerSerializer_v113 implements BedrockPacketSerializer<MovePl
         buffer.writeBoolean(packet.isOnGround());
         VarInts.writeUnsignedLong(buffer, packet.getRidingRuntimeEntityId());
         if (packet.getAnimation() == Animation.TELEPORT) {
-            buffer.writeIntLE(packet.getTeleportationCause().ordinal());
-            buffer.writeIntLE(packet.getEntityType());
+            buffer.writeIntLE(packet.getUnknownInt1());
+            buffer.writeIntLE(packet.getUnknownInt2());
         }
     }
 
@@ -39,8 +37,8 @@ public class MovePlayerSerializer_v113 implements BedrockPacketSerializer<MovePl
         packet.setOnGround(buffer.readBoolean());
         packet.setRidingRuntimeEntityId(VarInts.readUnsignedLong(buffer));
         if (packet.getAnimation() == Animation.TELEPORT) {
-            packet.setTeleportationCause(TeleportationCause.byId(buffer.readIntLE()));
-            packet.setEntityType(buffer.readIntLE());
+            packet.setUnknownInt1(buffer.readIntLE());
+            packet.setUnknownInt2(buffer.readIntLE());
         }
     }
 }

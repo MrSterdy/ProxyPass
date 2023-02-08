@@ -23,8 +23,8 @@ public class MovePlayerPacket extends BedrockPacket {
 
     private long ridingRuntimeEntityId;
 
-    private TeleportationCause teleportationCause;
-    private int entityType;
+    private int unknownInt1;
+    private int unknownInt2;
 
     @Override
     public final boolean handle(BedrockPacketHandler handler) {
@@ -40,25 +40,5 @@ public class MovePlayerPacket extends BedrockPacket {
         RESPAWN,
         TELEPORT,
         HEAD_ROTATION
-    }
-
-    public enum TeleportationCause {
-        UNKNOWN,
-        PROJECTILE,
-        CHORUS_FRUIT,
-        COMMAND,
-        BEHAVIOR;
-
-        private static final InternalLogger log = InternalLoggerFactory.getInstance(TeleportationCause.class);
-
-        private static final TeleportationCause[] VALUES = values();
-
-        public static TeleportationCause byId(int id) {
-            if (id >= 0 && id < VALUES.length) {
-                return VALUES[id];
-            }
-            log.debug("Unknown teleportation cause ID: {}", id);
-            return UNKNOWN;
-        }
     }
 }
