@@ -27,7 +27,7 @@ public class CraftingEventSerializer_v113 implements BedrockPacketSerializer<Cra
     @Override
     public void deserialize(ByteBuf buffer, BedrockPacketHelper helper, CraftingEventPacket packet, BedrockSession session) {
         packet.setContainerId(buffer.readByte());
-        packet.setType(CraftingType.values()[VarInts.readInt(buffer)]);
+        packet.setType(CraftingType.from(VarInts.readInt(buffer)));
         packet.setUuid(helper.readUuid(buffer));
 
         helper.readArray(buffer, packet.getInputs(), buf -> helper.readItem(buf, session));

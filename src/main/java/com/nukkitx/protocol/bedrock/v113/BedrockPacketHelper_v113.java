@@ -506,7 +506,7 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         long to = VarInts.readLong(buffer);
         int type = buffer.readUnsignedByte();
 
-        return new EntityLinkData(from, to, EntityLinkData.Type.values()[type]);
+        return new EntityLinkData(from, to, EntityLinkData.Type.byId(type));
     }
 
     @Override
