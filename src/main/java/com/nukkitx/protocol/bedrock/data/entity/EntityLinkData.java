@@ -6,9 +6,12 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class EntityLinkData {
-    long from;
-    long to;
+    long vehicleUniqueId;
+    long passengerUniqueId;
+
     Type type;
+
+    byte unknownByte;
 
     public enum Type {
         REMOVE,
