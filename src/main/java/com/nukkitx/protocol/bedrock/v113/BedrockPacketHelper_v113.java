@@ -52,9 +52,9 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         this.addEntityData(13, EntityData.ROW_TIME_LEFT);
         this.addEntityData(14, EntityData.ROW_TIME_RIGHT);
         this.addEntityData(15, EntityData.EXPERIENCE_VALUE);
-        this.addEntityData(16, EntityData.MINECART_BLOCK);
-        this.addEntityData(17, EntityData.MINECART_OFFSET);
-        this.addEntityData(18, EntityData.MINECART_HAS_BLOCK);
+        this.addEntityData(16, EntityData.DISPLAY_BLOCK_STATE_OR_HORSE_FLAGS_OR_WITHER_SKULL_DANGEROUS);
+        this.addEntityData(17, EntityData.DISPLAY_OFFSET);
+        this.addEntityData(18, EntityData.CUSTOM_DISPLAY);
         this.addEntityData(19, EntityData.SWELL);
         this.addEntityData(20, EntityData.OLD_SWELL);
         this.addEntityData(21, EntityData.SWELL_DIRECTION);
@@ -502,11 +502,14 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
     public EntityLinkData readEntityLink(ByteBuf buffer) {
         Preconditions.checkNotNull(buffer, "buffer");
 
-        long from = VarInts.readLong(buffer);
-        long to = VarInts.readLong(buffer);
+        long vehicleUniqueId = VarInts.readLong(buffer);
+        long passengerUniqueId = VarInts.readLong(buffer);
+
         int type = buffer.readUnsignedByte();
 
-        return new EntityLinkData(from, to, EntityLinkData.Type.byId(type));
+        byte unknownByte = buffer.readByte();
+
+        return new EntityLinkData(vehicleUniqueId, passengerUniqueId, EntityLinkData.Type.byId(type), unknownByte);
     }
 
     @Override
@@ -514,9 +517,10 @@ public class BedrockPacketHelper_v113 extends BedrockPacketHelper {
         Preconditions.checkNotNull(buffer, "buffer");
         Preconditions.checkNotNull(entityLink, "entityLink");
 
-        VarInts.writeLong(buffer, entityLink.getFrom());
-        VarInts.writeLong(buffer, entityLink.getTo());
+        VarInts.writeLong(buffer, entityLink.getVehicleUniqueId());
+        VarInts.writeLong(buffer, entityLink.getPassengerUniqueId());
         buffer.writeByte(entityLink.getType().ordinal());
+        buffer.writeByte(entityLink.getUnknownByte());
     }
 
     @Override
