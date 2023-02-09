@@ -14,7 +14,7 @@ public class RiderJumpSerializer_v113 implements BedrockPacketSerializer<RiderJu
 
     @Override
     public void serialize(ByteBuf buffer, BedrockPacketHelper helper, RiderJumpPacket packet) {
-        VarInts.writeUnsignedInt(buffer, packet.getJumpStrength());
+        VarInts.writeInt(buffer, packet.getJumpStrength());
     }
 
     @Override
